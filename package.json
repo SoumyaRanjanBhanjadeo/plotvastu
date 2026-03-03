@@ -8,13 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "server": "node backend/server.js",
-    "server:dev": "nodemon backend/server.js"
+    "server:dev": "nodemon backend/server.js",
+    "both": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "axios": "^1.13.6",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.9.0",
+    "concurrently": "^9.2.1",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
@@ -28,6 +30,7 @@
     "mongoose": "^9.2.3",
     "morgan": "^1.10.1",
     "next": "16.1.6",
+    "nodemon": "^3.1.14",
     "ol": "^10.8.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
