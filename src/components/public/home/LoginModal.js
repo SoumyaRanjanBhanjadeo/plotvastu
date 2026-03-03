@@ -49,10 +49,10 @@ export function LoginModal({ isOpen, onClose }) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-2xl z-50 overflow-hidden"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-sm bg-white rounded-2xl shadow-2xl z-50 overflow-hidden"
           >
             {/* Header */}
-            <div className="relative bg-linear-to-br from-blue-600 to-purple-600 px-8 py-12 text-center">
+            <div className="relative bg-linear-to-br from-blue-600 to-purple-600 px-6 py-8 text-center">
               <button
                 onClick={onClose}
                 className="absolute top-4 right-4 w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors cursor-pointer"
@@ -60,15 +60,15 @@ export function LoginModal({ isOpen, onClose }) {
                 <X className="w-5 h-5" />
               </button>
               
-              <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Lock className="w-8 h-8 text-blue-600" />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-3">
+                <Lock className="w-6 h-6 text-blue-600" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">Welcome Back</h2>
-              <p className="text-blue-100">Admin Login Only</p>
+              <h2 className="text-xl font-bold text-white mb-1">Welcome Back</h2>
+              <p className="text-blue-100 text-sm">Admin Login Only</p>
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Email Address
@@ -80,7 +80,7 @@ export function LoginModal({ isOpen, onClose }) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    placeholder="admin@plotvastu.com"
+                    placeholder="Enter your email"
                     className="w-full pl-12 pr-4 py-3 dark:text-black bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                 </div>
@@ -98,7 +98,7 @@ export function LoginModal({ isOpen, onClose }) {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Enter your password"
-                    className="w-full pl-12 pr-12 py-3 dark:text-black bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all cursor-pointer"
+                    className="w-full pl-12 pr-12 py-3 dark:text-black bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                   />
                   <button
                     type="button"
@@ -113,7 +113,7 @@ export function LoginModal({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-4 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isLoading ? (
                   <>

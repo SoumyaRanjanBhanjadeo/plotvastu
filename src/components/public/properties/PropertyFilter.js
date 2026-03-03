@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, X, ChevronDown } from 'lucide-react';
+import Swal from 'sweetalert2';
 import { FormSelect } from '@/components/shared/FormSelect';
 import { PROPERTY_TYPES } from '@/lib/constants';
 
@@ -10,7 +11,45 @@ export function PropertyFilter({ filters, onFilterChange }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
 
-  const handleChange = (key, value) => {
+  const handleChange = async (key, value) => {
+    // Validate min price
+    if (key === 'minPrice') {
+      const minPrice = Number(value);
+      if (minPrice < 0) {
+        await Swal.fire({
+          title: 'Invalid Price',
+          text: 'Minimum price cannot be below 0.',
+          icon: 'error',
+          confirmButtonColor: '#dc2626',
+        });
+        return;
+      }
+    }
+
+    // Validate max price
+    if (key === 'maxPrice') {
+      const maxPrice = Number(value);
+      const minPrice = Number(localFilters.minPrice);
+      if (maxPrice < 0) {
+        await Swal.fire({
+          title: 'Invalid Price',
+          text: 'Maximum price cannot be below 0.',
+          icon: 'error',
+          confirmButtonColor: '#dc2626',
+        });
+        return;
+      }
+      if (localFilters.minPrice && maxPrice < minPrice) {
+        await Swal.fire({
+          title: 'Invalid Price Range',
+          text: 'Maximum price cannot be less than minimum price.',
+          icon: 'error',
+          confirmButtonColor: '#dc2626',
+        });
+        return;
+      }
+    }
+
     const newFilters = { ...localFilters, [key]: value };
     setLocalFilters(newFilters);
     onFilterChange(newFilters);
@@ -75,7 +114,8 @@ export function PropertyFilter({ filters, onFilterChange }) {
             placeholder="Min Price"
             value={localFilters.minPrice || ''}
             onChange={(e) => handleChange('minPrice', e.target.value)}
-            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-28"
+            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 appearance-none"
+            style={{ MozAppearance: 'textfield' }}
           />
           <span className="text-gray-400">-</span>
           <input
@@ -83,7 +123,8 @@ export function PropertyFilter({ filters, onFilterChange }) {
             placeholder="Max Price"
             value={localFilters.maxPrice || ''}
             onChange={(e) => handleChange('maxPrice', e.target.value)}
-            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-28"
+            className="px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-28 appearance-none"
+            style={{ MozAppearance: 'textfield' }}
           />
         </div>
 

@@ -13,6 +13,7 @@ import {
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 import { useAuth } from '@/hooks/useAuth';
 import { ThemeToggle } from '@/components/shared/ThemeToggle';
 
@@ -26,6 +27,31 @@ const navItems = [
 export function Sidebar({ isCollapsed, onToggle }) {
   const pathname = usePathname();
   const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: 'Logout?',
+      text: 'Are you sure you want to logout?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, logout',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      await logout();
+      Swal.fire({
+        title: 'Logged Out',
+        text: 'You have been successfully logged out.',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
+  };
 
   return (
     <aside 
@@ -93,7 +119,7 @@ export function Sidebar({ isCollapsed, onToggle }) {
           {!isCollapsed && <span className="text-gray-400 text-sm">Theme</span>}
         </div>
         <button
-          onClick={logout}
+          onClick={handleLogout}
           className="flex items-center gap-3 px-4 py-3 w-full text-gray-400 hover:bg-gray-800 hover:text-red-400 rounded-xl transition-all cursor-pointer"
         >
           <LogOut className="w-5 h-5 shrink-0" />

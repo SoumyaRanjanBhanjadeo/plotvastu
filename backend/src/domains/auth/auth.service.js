@@ -13,8 +13,8 @@ class AuthService {
 
   // Login user
   async login(email, password) {
-    // Check if user exists
-    const user = await User.findOne({ email }).select('+password');
+    // Check if user exists (case-insensitive email matching)
+    const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
     if (!user) {
       throw new Error('Invalid credentials');
     }
@@ -77,8 +77,8 @@ class AuthService {
     try {
       const { email, password, name, role = 'admin' } = userData;
 
-      // Check if user already exists
-      const existingUser = await User.findOne({ email });
+      // Check if user already exists (case-insensitive)
+      const existingUser = await User.findOne({ email: email.toLowerCase() });
       if (existingUser) {
         console.log('User already exists:', email);
         throw new Error('User with this email already exists');
@@ -87,7 +87,7 @@ class AuthService {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 12);
 
-      // Create new user
+      // Create new user (email will be lowercased by schema)
       const user = new User({
         email,
         password: hashedPassword,
