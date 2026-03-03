@@ -12,7 +12,7 @@ export function Hero() {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <section className="relative h-screen flex items-center pt-20 overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50" />
       
@@ -42,7 +42,7 @@ export function Hero() {
         className="absolute bottom-20 left-10 w-80 h-80 bg-purple-200/30 rounded-full blur-3xl"
       />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left Content */}
           <div className="text-center lg:text-left">
@@ -61,7 +61,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6"
+              className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4"
             >
               Find Your{' '}
               <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -74,7 +74,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg text-gray-600 mb-8 max-w-xl mx-auto lg:mx-0"
+              className="text-lg text-gray-600 mb-6 max-w-xl mx-auto lg:mx-0"
             >
               Discover the perfect plot, residential, or commercial property. 
               We offer a curated selection of premium properties with transparent 
@@ -89,12 +89,12 @@ export function Hero() {
             >
               <Link
                 href="/properties"
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-all hover:gap-4"
+                className="group inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-all hover:gap-4"
               >
                 Explore Properties
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-gray-900 border-2 border-gray-200 rounded-xl font-semibold hover:border-gray-300 transition-colors">
+              <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-xl font-semibold hover:border-gray-300 transition-colors">
                 <Play className="w-5 h-5" />
                 Watch Video
               </button>
@@ -105,7 +105,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-gray-200"
+              className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-gray-200"
             >
               {stats.map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">

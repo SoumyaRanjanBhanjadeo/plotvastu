@@ -29,9 +29,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Clear auth data - the SessionExpiredModal will be shown by useAuth hook
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/';
+      localStorage.removeItem('tokenExpiresAt');
+      
+      // Dispatch custom event to trigger session expired modal
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('sessionExpired'));
+      }
     }
     return Promise.reject(error);
   }

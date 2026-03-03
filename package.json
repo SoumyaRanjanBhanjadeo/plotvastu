@@ -38,6 +38,7 @@
     "react-hot-toast": "^2.6.0",
     "react-select": "^5.10.2",
     "recharts": "^3.7.0",
+    "sweetalert2": "^11.26.21",
     "zod": "^4.3.6"
   },
   "devDependencies": {

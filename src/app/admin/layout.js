@@ -4,19 +4,20 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { Sidebar } from '@/components/dashboard/layout/Sidebar';
+import { SessionExpiredModal } from '@/components/shared/SessionExpiredModal';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading, showSessionExpired, handleLoginAgain } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !isAuthenticated) {
+    if (!loading && !isAuthenticated && !showSessionExpired) {
       router.push('/');
     }
-  }, [loading, isAuthenticated, router]);
+  }, [loading, isAuthenticated, showSessionExpired, router]);
 
   if (loading) {
     return (
@@ -27,12 +28,21 @@ export default function AdminLayout({ children }) {
   }
 
   if (!isAuthenticated) {
-    return null;
+    return (
+      <SessionExpiredModal 
+        isOpen={showSessionExpired} 
+        onLogin={handleLoginAgain} 
+      />
+    );
   }
 
   return (
     <>
       <Toaster position="top-right" />
+      <SessionExpiredModal 
+        isOpen={showSessionExpired} 
+        onLogin={handleLoginAgain} 
+      />
       <div className="min-h-screen bg-gray-50 in-[.dark_&]:bg-gray-950 transition-colors">
         <Sidebar isCollapsed={isCollapsed} onToggle={() => setIsCollapsed(!isCollapsed)} />
         <main 
