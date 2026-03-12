@@ -12,7 +12,7 @@ const customStyles = {
     '&:hover': {
       borderColor: state.isFocused ? '#3b82f6' : '#d1d5db',
     },
-    backgroundColor: 'white',
+    backgroundColor: 'var(--select-bg, white)',
   }),
   option: (base, state) => ({
     ...base,
@@ -20,8 +20,8 @@ const customStyles = {
       ? '#3b82f6' 
       : state.isFocused 
         ? '#eff6ff' 
-        : 'white',
-    color: state.isSelected ? 'white' : '#374151',
+        : 'var(--select-bg, white)',
+    color: state.isSelected ? 'white' : 'var(--select-text, #374151)',
     cursor: 'pointer',
     padding: '12px 16px',
   }),
@@ -30,6 +30,11 @@ const customStyles = {
     borderRadius: '12px',
     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
     zIndex: 50,
+    backgroundColor: 'var(--select-bg, white)',
+  }),
+  menuPortal: (base) => ({
+    ...base,
+    zIndex: 9999,
   }),
   placeholder: (base) => ({
     ...base,
@@ -37,7 +42,7 @@ const customStyles = {
   }),
   singleValue: (base) => ({
     ...base,
-    color: '#374151',
+    color: 'var(--select-text, #374151)',
   }),
 };
 
@@ -58,7 +63,7 @@ export function FormSelect({
   return (
     <div>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
           {label}
         </label>
       )}
@@ -69,6 +74,10 @@ export function FormSelect({
         placeholder={placeholder}
         isClearable={isClearable}
         styles={customStyles}
+        menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+        menuPosition="fixed"
+        className="dark"
+        classNamePrefix="select"
       />
     </div>
   );

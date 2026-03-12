@@ -18,7 +18,7 @@ function PropertyCard({ property }) {
     <motion.div
       whileHover={{ y: -8 }}
       transition={{ duration: 0.3 }}
-      className="group bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 hover:shadow-2xl transition-shadow"
+      className="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden border border-gray-100 dark:border-gray-700 hover:shadow-2xl transition-shadow"
     >
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
@@ -59,17 +59,17 @@ function PropertyCard({ property }) {
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
+        <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
           {property.title}
         </h3>
         
-        <div className="flex items-center gap-1 text-gray-500 text-sm mb-3">
+        <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm mb-3">
           <MapPin className="w-4 h-4" />
           <span className="line-clamp-1">{property.location?.city}, {property.location?.state}</span>
         </div>
 
         {/* Features */}
-        <div className="flex items-center gap-4 text-sm text-gray-600 mb-4">
+        <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
           <div className="flex items-center gap-1">
             <Square className="w-4 h-4" />
             <span>{property.area?.value} {property.area?.unit}</span>
@@ -77,9 +77,9 @@ function PropertyCard({ property }) {
         </div>
 
         {/* Price & CTA */}
-        <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+        <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
           <div>
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
               {property.formattedPrice || `₹${property.price?.amount?.toLocaleString('en-IN')}`}
             </span>
           </div>
@@ -100,20 +100,20 @@ export function FeaturedProperties() {
   const { properties, loading, error } = useFeaturedProperties(6);
 
   return (
-    <section className="py-20 lg:py-28 bg-gray-50">
+    <section className="py-20 lg:py-28 bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeIn className="text-center mb-16">
-          <span className="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-4">
+          <span className="inline-block px-4 py-1.5 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium mb-4">
             Featured Properties
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-4">
             Discover Your Perfect{' '}
             <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Property
             </span>
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Browse through our handpicked selection of premium properties. 
             From plots to villas, find what suits your needs.
           </p>
@@ -123,7 +123,7 @@ export function FeaturedProperties() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-2xl h-96 animate-pulse" />
+              <div key={i} className="bg-white dark:bg-gray-800 rounded-2xl h-96 animate-pulse" />
             ))}
           </div>
         ) : error ? (
@@ -132,7 +132,7 @@ export function FeaturedProperties() {
           </div>
         ) : properties.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-500">No featured properties available at the moment.</p>
+            <p className="text-gray-500 dark:text-gray-400">No featured properties available at the moment.</p>
           </div>
         ) : (
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

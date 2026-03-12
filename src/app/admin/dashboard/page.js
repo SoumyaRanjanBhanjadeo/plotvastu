@@ -39,12 +39,12 @@ function StatsCard({ title, value, icon: Icon, trend, trendUp, color }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700"
     >
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-gray-500 text-sm font-medium">{title}</p>
-          <h3 className="text-3xl font-bold text-gray-900 mt-2">{value}</h3>
+          <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{title}</p>
+          <h3 className="text-3xl font-bold text-gray-900 dark:text-white mt-2">{value}</h3>
           {trend && (
             <div className={`flex items-center gap-1 mt-2 text-sm ${trendUp ? 'text-green-600' : 'text-red-600'}`}>
               {trendUp ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
@@ -87,21 +87,21 @@ function RecentLeads() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Leads</h3>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Recent Leads</h3>
       {loading ? (
         <div className="flex justify-center py-8">
           <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
         </div>
       ) : leads.length === 0 ? (
-        <p className="text-gray-500 text-center py-8">No leads yet</p>
+        <p className="text-gray-500 dark:text-gray-400 text-center py-8">No leads yet</p>
       ) : (
         <div className="space-y-4">
           {leads.map((lead) => (
-            <div key={lead._id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
+            <div key={lead._id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-xl">
               <div>
-                <p className="font-medium text-gray-900">{lead.name}</p>
-                <p className="text-sm text-gray-500">{lead.propertyId?.title || 'General Inquiry'}</p>
+                <p className="font-medium text-gray-900 dark:text-white">{lead.name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{lead.propertyId?.title || 'General Inquiry'}</p>
               </div>
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[lead.status]}`}>
                 {lead.status}
@@ -159,8 +159,8 @@ export default function DashboardPage() {
       {/* Header */}
       <FadeIn>
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600 mt-1">Welcome back! Here&apos;s what&apos;s happening with your properties.</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">Welcome back! Here&apos;s what&apos;s happening with your properties.</p>
         </div>
       </FadeIn>
 
@@ -196,8 +196,8 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {/* Property Status Chart */}
         <FadeIn delay={0.1}>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Property Status</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Property Status</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -222,7 +222,7 @@ export default function DashboardPage() {
               {propertyStatusData.map((item) => (
                 <div key={item.name} className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                  <span className="text-sm text-gray-600">{item.name}</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">{item.name}</span>
                 </div>
               ))}
             </div>
@@ -231,8 +231,8 @@ export default function DashboardPage() {
 
         {/* Inquiry Status Chart */}
         <FadeIn delay={0.2}>
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Lead Status</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Lead Status</h3>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={inquiryStatusData}>

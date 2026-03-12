@@ -49,6 +49,8 @@ export function Sidebar({ isCollapsed, onToggle }) {
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
+      }).then(() => {
+        window.location.href = '/';
       });
     }
   };
@@ -71,7 +73,7 @@ export function Sidebar({ isCollapsed, onToggle }) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors"
+          className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
         >
           {isCollapsed ? (
             <ChevronRight className="w-5 h-5" />

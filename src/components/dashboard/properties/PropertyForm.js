@@ -164,14 +164,14 @@ export function PropertyForm({ initialData = null }) {
     }
   };
 
-  const inputClass = "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+  const inputClass = "w-full px-4 py-3 bg-white border border-gray-200 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
   const labelClass = "block text-sm font-medium text-gray-700 mb-2";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Basic Information */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Basic Information</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Basic Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <label className={labelClass}>Property Title</label>
@@ -215,7 +215,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Pricing */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Pricing</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Pricing</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label className={labelClass}>Price</label>
@@ -252,7 +252,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Area */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Area</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Area</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className={labelClass}>Area Value</label>
@@ -277,7 +277,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Location */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Location</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Location</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <label className={labelClass}>Address</label>
@@ -364,7 +364,7 @@ export function PropertyForm({ initialData = null }) {
               key={feature}
               type="button"
               onClick={() => handleFeatureToggle(feature)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                 formData.features.includes(feature)
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -379,7 +379,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Images */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Images</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Images</h2>
         
         {/* Upload Button */}
         <div className="mb-6">
@@ -450,8 +450,8 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Settings */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Settings</h2>
-        <div className="flex flex-wrap gap-6">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Settings</h2>
+        <div className="flex flex-wrap gap-6 dark:text-white">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"

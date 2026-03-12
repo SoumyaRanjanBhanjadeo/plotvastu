@@ -1,42 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/context/ThemeContext';
 
 export function ThemeToggle({ className = '' }) {
-  const [theme, setTheme] = useState('light');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    // Get theme from localStorage, default to light
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'dark') {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    } else {
-      setTheme('light');
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    
-    if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-    localStorage.setItem('theme', newTheme);
-  };
+  const { theme, toggleTheme, mounted } = useTheme();
 
   // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <div className={`p-2 rounded-xl bg-gray-100 ${className}`}>
+      <div className={`p-2 rounded-xl bg-gray-100 dark:bg-gray-800 ${className}`}>
         <Sun className="w-5 h-5 text-gray-400" />
       </div>
     );

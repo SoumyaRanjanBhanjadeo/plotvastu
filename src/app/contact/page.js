@@ -47,8 +47,8 @@ export default function ContactPage() {
     {
       icon: Phone,
       title: 'Phone',
-      content: '+91 98765 43210',
-      link: 'tel:+919876543210',
+      content: '+91 8249307969',
+      link: 'tel:+918249307969',
     },
     {
       icon: Mail,
@@ -75,7 +75,7 @@ export default function ContactPage() {
       <Toaster position="top-right" />
       <Header onLoginClick={() => setLoginModalOpen(true)} />
       
-      <main className="pt-20 min-h-screen bg-gray-50">
+      <main className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Hero Section */}
         <section className="bg-linear-to-br from-blue-600 to-purple-600 text-white py-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -99,23 +99,23 @@ export default function ContactPage() {
                     <motion.div
                       key={index}
                       whileHover={{ x: 5 }}
-                      className="bg-white rounded-2xl p-6 shadow-sm"
+                      className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm"
                     >
                       <div className="flex items-start gap-4">
-                        <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center shrink-0">
-                          <item.icon className="w-6 h-6 text-blue-600" />
+                        <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900 rounded-xl flex items-center justify-center shrink-0">
+                          <item.icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">{item.title}</h3>
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
                           {item.link ? (
                             <a 
                               href={item.link} 
-                              className="text-gray-600 hover:text-blue-600 transition-colors"
+                              className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors"
                             >
                               {item.content}
                             </a>
                           ) : (
-                            <p className="text-gray-600">{item.content}</p>
+                            <p className="text-gray-600 dark:text-gray-400">{item.content}</p>
                           )}
                         </div>
                       </div>
@@ -123,14 +123,14 @@ export default function ContactPage() {
                   ))}
 
                   {/* Social Links */}
-                  <div className="bg-white rounded-2xl p-6 shadow-sm">
-                    <h3 className="font-semibold text-gray-900 mb-4">Follow Us</h3>
+                  <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Follow Us</h3>
                     <div className="flex gap-3">
                       {[Facebook, Twitter, Instagram, Linkedin].map((Icon, index) => (
                         <a
                           key={index}
                           href="#"
-                          className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 hover:bg-blue-600 hover:text-white transition-colors"
+                          className="w-10 h-10 bg-gray-100 dark:bg-gray-700 rounded-xl flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-blue-600 hover:text-white transition-colors"
                         >
                           <Icon className="w-5 h-5" />
                         </a>
@@ -142,12 +142,12 @@ export default function ContactPage() {
 
               {/* Contact Form */}
               <FadeIn delay={0.1} className="lg:col-span-2">
-                <div className="bg-white rounded-2xl p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send us a Message</h2>
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Full Name
                         </label>
                         <input
@@ -156,11 +156,11 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           required
                           placeholder="John Doe"
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Email Address
                         </label>
                         <input
@@ -169,14 +169,14 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
                           placeholder="john@example.com"
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Phone Number
                         </label>
                         <input
@@ -184,11 +184,11 @@ export default function ContactPage() {
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+91 98765 43210"
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                           Subject
                         </label>
                         <input
@@ -197,13 +197,13 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                           required
                           placeholder="How can we help?"
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                         Message
                       </label>
                       <textarea
@@ -212,7 +212,7 @@ export default function ContactPage() {
                         required
                         rows={5}
                         placeholder="Tell us more about your inquiry..."
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 

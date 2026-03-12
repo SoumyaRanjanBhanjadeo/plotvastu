@@ -37,12 +37,8 @@ export function ThemeProvider({ children }) {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, mounted }}>
       {children}
     </ThemeContext.Provider>
   );
