@@ -42,16 +42,16 @@ export default function PropertiesPage() {
       <Toaster position="top-right" />
       <Header onLoginClick={() => setLoginModalOpen(true)} />
       
-      <main className="pt-20 min-h-screen bg-gray-50">
+      <main className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Page Header */}
-        <div className="bg-white border-b border-gray-200">
+        <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <FadeIn>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                 Properties
               </h1>
-              <p className="text-gray-600">
-                Browse through our collection of premium properties
+              <p className="text-gray-600 dark:text-gray-400">
+                Browse through our collection of premium properties.
               </p>
             </FadeIn>
           </div>
@@ -65,7 +65,7 @@ export default function PropertiesPage() {
 
           {/* Results Count */}
           <div className="mb-6">
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400">
               {pagination ? (
                 <>Showing {properties.length} of {pagination.total} properties</>
               ) : (
@@ -85,7 +85,7 @@ export default function PropertiesPage() {
             </div>
           ) : properties.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-500 text-lg">No properties found matching your criteria.</p>
+              <p className="text-gray-500 dark:text-gray-400 text-lg">No properties found matching your criteria.</p>
               <button
                 onClick={() => handleFilterChange({ type: '', status: '', minPrice: '', maxPrice: '', city: '', search: '' })}
                 className="mt-4 text-blue-600 hover:underline"
@@ -107,7 +107,7 @@ export default function PropertiesPage() {
                   <button
                     onClick={() => handlePageChange(filters.page - 1)}
                     disabled={filters.page === 1}
-                    className="p-2 rounded-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                    className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <ChevronLeft className="w-5 h-5" />
                   </button>
@@ -127,7 +127,7 @@ export default function PropertiesPage() {
                           className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                             page === filters.page
                               ? 'bg-blue-600 text-white'
-                              : 'border border-gray-200 hover:bg-gray-50'
+                              : 'border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800'
                           }`}
                         >
                           {page}
@@ -145,7 +145,7 @@ export default function PropertiesPage() {
                   <button
                     onClick={() => handlePageChange(filters.page + 1)}
                     disabled={filters.page === pagination.pages}
-                    className="p-2 rounded-lg border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                    className="p-2 rounded-lg border border-gray-200 dark:border-gray-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <ChevronRight className="w-5 h-5" />
                   </button>

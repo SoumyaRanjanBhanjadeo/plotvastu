@@ -92,7 +92,7 @@ export function Testimonials() {
             <div className="flex items-center justify-center gap-4 mt-8">
               <button
                 onClick={prev}
-                className="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                className="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-6 h-6" />
               </button>
@@ -106,7 +106,7 @@ export function Testimonials() {
                     className={`w-2 h-2 rounded-full transition-all ${
                       index === currentIndex
                         ? 'w-8 bg-blue-500'
-                        : 'bg-white/30 hover:bg-white/50'
+                        : 'bg-white/30 hover:bg-white/50 cursor-pointer'
                     }`}
                   />
                 ))}
@@ -114,7 +114,7 @@ export function Testimonials() {
 
               <button
                 onClick={next}
-                className="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors"
+                className="w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors cursor-pointer"
               >
                 <ChevronRight className="w-6 h-6" />
               </button>

@@ -10,19 +10,18 @@ import {
   Trash2, 
   Star,
   Eye,
-  Loader2,
-  AlertCircle
+  Loader2
 } from 'lucide-react';
 import { propertyAPI } from '@/lib/api';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
 import { PROPERTY_TYPES, PROPERTY_STATUS } from '@/lib/constants';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 export default function PropertiesAdminPage() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const fetchProperties = async () => {
     try {
@@ -44,11 +43,28 @@ export default function PropertiesAdminPage() {
     try {
       await propertyAPI.delete(id);
       toast.success('Property deleted successfully');
-      setDeleteConfirm(null);
       fetchProperties();
     } catch (error) {
       toast.error('Failed to delete property');
     }
+  };
+
+  const confirmDelete = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+      }
+    });
   };
 
   const handleToggleFeatured = async (id) => {
@@ -65,13 +81,13 @@ export default function PropertiesAdminPage() {
   const getStatusConfig = (status) => PROPERTY_STATUS.find(s => s.value === status);
 
   return (
-    <div>
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <FadeIn>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Properties</h1>
-            <p className="text-gray-600 mt-1">Manage your property listings</p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Properties</h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-1">Manage your property listings</p>
           </div>
           <Link
             href="/admin/properties/new"
@@ -92,46 +108,46 @@ export default function PropertiesAdminPage() {
             placeholder="Search properties..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full pl-12 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </FadeIn>
 
       {/* Properties Table */}
       <FadeIn delay={0.2}>
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
             </div>
           ) : properties.length === 0 ? (
             <div className="text-center py-20">
-              <p className="text-gray-500">No properties found</p>
+              <p className="text-gray-500 dark:text-gray-400">No properties found</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-100">
+                <thead className="bg-gray-50 dark:bg-gray-700 border-b border-gray-100 dark:border-gray-600">
                   <tr>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Property</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Type</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Price</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Views</th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Actions</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Property</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Type</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Price</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Status</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Views</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900 dark:text-white">Actions</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {properties.map((property) => {
                     const statusConfig = getStatusConfig(property.status);
                     const primaryImage = property.images?.find(img => img.isPrimary)?.url || 
                                          property.images?.[0]?.url;
 
                     return (
-                      <tr key={property._id} className="hover:bg-gray-50">
+                      <tr key={property._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-gray-200 rounded-xl overflow-hidden shrink-0">
+                            <div className="w-16 h-16 bg-gray-200 dark:bg-gray-600 rounded-xl overflow-hidden shrink-0">
                               {primaryImage ? (
                                 <img src={primaryImage} alt={property.title} className="w-full h-full object-cover" />
                               ) : (
@@ -141,10 +157,10 @@ export default function PropertiesAdminPage() {
                               )}
                             </div>
                             <div>
-                              <h3 className="font-medium text-gray-900">{property.title}</h3>
-                              <p className="text-sm text-gray-500">{property.location?.city}</p>
+                              <h3 className="font-medium text-gray-900 dark:text-white">{property.title}</h3>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">{property.location?.city}</p>
                               {property.isFeatured && (
-                                <span className="inline-flex items-center gap-1 text-xs text-amber-600 mt-1">
+                                <span className="inline-flex items-center gap-1 text-xs text-amber-600 dark:text-amber-400 mt-1">
                                   <Star className="w-3 h-3 fill-amber-600" />
                                   Featured
                                 </span>
@@ -153,26 +169,26 @@ export default function PropertiesAdminPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                          <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
                             {getTypeLabel(property.type)}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className="font-medium text-gray-900">
+                          <span className="font-medium text-gray-900 dark:text-white">
                             ₹{property.price?.amount?.toLocaleString('en-IN')}
                           </span>
                         </td>
                         <td className="px-6 py-4">
                           <span className={`px-3 py-1 rounded-full text-sm ${
-                            statusConfig?.color === 'green' ? 'bg-green-100 text-green-700' :
-                            statusConfig?.color === 'red' ? 'bg-red-100 text-red-700' :
-                            'bg-amber-100 text-amber-700'
+                            statusConfig?.color === 'green' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
+                            statusConfig?.color === 'red' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' :
+                            'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300'
                           }`}>
                             {statusConfig?.label || property.status}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-1 text-gray-600">
+                          <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                             <Eye className="w-4 h-4" />
                             {property.views}
                           </div>
@@ -197,7 +213,7 @@ export default function PropertiesAdminPage() {
                               <Edit2 className="w-4 h-4" />
                             </Link>
                             <button
-                              onClick={() => setDeleteConfirm(property._id)}
+                              onClick={() => confirmDelete(property._id)}
                               className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -213,39 +229,6 @@ export default function PropertiesAdminPage() {
           )}
         </div>
       </FadeIn>
-
-      {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4"
-          >
-            <div className="flex items-center gap-3 text-red-600 mb-4">
-              <AlertCircle className="w-6 h-6" />
-              <h3 className="text-lg font-bold">Confirm Delete</h3>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this property? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete(deleteConfirm)}
-                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }

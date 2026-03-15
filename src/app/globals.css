@@ -12,6 +12,14 @@
 .dark {
   --background: #0a0a0a;
   --foreground: #fafafa;
+  --select-bg: #1f2937;
+  --select-text: #f3f4f6;
+}
+
+/* Light mode defaults */
+:root {
+  --select-bg: #ffffff;
+  --select-text: #374151;
 }
 
 @theme inline {

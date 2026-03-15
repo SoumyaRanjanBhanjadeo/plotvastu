@@ -9,7 +9,8 @@ import {
   MapPin, 
   Loader2,
   Plus,
-  Trash2
+  Trash2,
+  Eye,
 } from 'lucide-react';
 import { propertyAPI, mediaAPI } from '@/lib/api';
 import { 
@@ -21,6 +22,7 @@ import {
 } from '@/lib/constants';
 import toast from 'react-hot-toast';
 import { FormSelect } from '@/components/shared/FormSelect';
+import { Portal } from '@/components/shared/Portal';
 
 export function PropertyForm({ initialData = null }) {
   const router = useRouter();
@@ -58,6 +60,9 @@ export function PropertyForm({ initialData = null }) {
 
   const [uploadingImages, setUploadingImages] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [showFullscreenPreview, setShowFullscreenPreview] = useState(false);
+  const [customFeatures, setCustomFeatures] = useState([]);
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -96,6 +101,46 @@ export function PropertyForm({ initialData = null }) {
     }));
   };
 
+  const handleAddCustomFeature = () => {
+    const newFeature = '';
+    setCustomFeatures(prev => [...prev, { id: Date.now(), value: newFeature }]);
+  };
+
+  const handleCustomFeatureChange = (id, value) => {
+    setCustomFeatures(prev => 
+      prev.map(feature => 
+        feature.id === id ? { ...feature, value } : feature
+      )
+    );
+  };
+
+  const handleCustomFeatureBlur = (id, value) => {
+    if (value.trim()) {
+      handleFeatureToggle(value.trim());
+    }
+    setCustomFeatures(prev => prev.filter(feature => feature.id !== id));
+  };
+
+  const handleCustomFeatureKeyDown = (e, id) => {
+    if (e.key === 'Enter') {
+      const value = e.target.value.trim();
+      if (value) {
+        handleFeatureToggle(value);
+        setCustomFeatures(prev => prev.filter(feature => feature.id !== id));
+      }
+    }
+  };
+
+  // Convert file to base64
+  const fileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleImageUpload = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
@@ -103,28 +148,35 @@ export function PropertyForm({ initialData = null }) {
     setUploadingImages(true);
     const uploadedImages = [];
 
-    for (const file of files) {
-      const formData = new FormData();
-      formData.append('image', file);
+    try {
+      // Convert all files to base64
+      const base64Images = await Promise.all(
+        files.map(file => fileToBase64(file))
+      );
 
-      try {
-        const response = await mediaAPI.upload(formData);
-        uploadedImages.push({
-          url: response.data.data.url,
-          publicId: response.data.data.publicId,
-          isPrimary: formData.images.length === 0 && uploadedImages.length === 0,
-        });
-      } catch (error) {
-        toast.error(`Failed to upload ${file.name}`);
-      }
+      // Upload using uploadMultiple endpoint
+      const response = await mediaAPI.uploadMultiple({ images: base64Images });
+      
+      const imagesData = response.data.data.map((img, index) => ({
+        url: img.url,
+        publicId: img.publicId,
+        isPrimary: index === 0 && formData.images.length === 0,
+      }));
+
+      setFormData(prev => ({
+        ...prev,
+        images: [...prev.images, ...imagesData],
+      }));
+      toast.success('Images uploaded successfully');
+    } catch (error) {
+      toast.error('Failed to upload images');
+      console.error('Upload error:', error);
+    } finally {
+      setUploadingImages(false);
     }
-
-    setFormData(prev => ({
-      ...prev,
-      images: [...prev.images, ...uploadedImages],
-    }));
-    setUploadingImages(false);
-    toast.success('Images uploaded successfully');
+    
+    // Reset file input
+    e.target.value = '';
   };
 
   const handleRemoveImage = (index) => {
@@ -142,6 +194,11 @@ export function PropertyForm({ initialData = null }) {
         isPrimary: i === index,
       })),
     }));
+  };
+
+  const handlePreviewImage = (imageUrl) => {
+    setPreviewImage(imageUrl);
+    setShowFullscreenPreview(true);
   };
 
   const handleSubmit = async (e) => {
@@ -164,14 +221,14 @@ export function PropertyForm({ initialData = null }) {
     }
   };
 
-  const inputClass = "w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
+  const inputClass = "w-full px-4 py-3 bg-white border border-gray-500 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none";
   const labelClass = "block text-sm font-medium text-gray-700 mb-2";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       {/* Basic Information */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Basic Information</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Basic Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <label className={labelClass}>Property Title</label>
@@ -215,7 +272,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Pricing */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Pricing</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Pricing</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
             <label className={labelClass}>Price</label>
@@ -242,7 +299,7 @@ export function PropertyForm({ initialData = null }) {
                 type="checkbox"
                 checked={formData.price.negotiable}
                 onChange={(e) => handleNestedChange('price', 'negotiable', e.target.checked)}
-                className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+                className="w-5 h-5 accent-blue-600 rounded focus:ring-blue-500 cursor-pointer"
               />
               <span className="text-gray-700">Price Negotiable</span>
             </label>
@@ -252,7 +309,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Area */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Area</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Area</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className={labelClass}>Area Value</label>
@@ -277,7 +334,7 @@ export function PropertyForm({ initialData = null }) {
 
       {/* Location */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Location</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Location</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="md:col-span-2">
             <label className={labelClass}>Address</label>
@@ -364,7 +421,7 @@ export function PropertyForm({ initialData = null }) {
               key={feature}
               type="button"
               onClick={() => handleFeatureToggle(feature)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                 formData.features.includes(feature)
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -374,12 +431,53 @@ export function PropertyForm({ initialData = null }) {
               {feature}
             </button>
           ))}
+          {formData.features.map((feature, idx) => {
+            if (!PROPERTY_FEATURES.includes(feature)) {
+              return (
+                <span
+                  key={`${feature}-${idx}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl text-sm font-medium"
+                >
+                  ✓ {feature}
+                  <button
+                    type="button"
+                    onClick={() => handleFeatureToggle(feature)}
+                    className="hover:text-red-600"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              );
+            }
+            return null;
+          })}
+          {customFeatures.map((feature) => (
+            <input
+              key={feature.id}
+              type="text"
+              defaultValue={feature.value}
+              onChange={(e) => handleCustomFeatureChange(feature.id, e.target.value)}
+              onKeyDown={(e) => handleCustomFeatureKeyDown(e, feature.id)}
+              onBlur={(e) => handleCustomFeatureBlur(feature.id, e.target.value)}
+              autoFocus
+              className="px-4 py-2 bg-green-50 border border-blue-300 rounded-xl text-sm font-medium text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-37.5"
+              placeholder="Enter feature..."
+            />
+          ))}
+          <button
+            type="button"
+            onClick={handleAddCustomFeature}
+            className="px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer bg-blue-100 text-blue-700 hover:bg-blue-200 flex items-center gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add Custom Feature
+          </button>
         </div>
       </div>
 
       {/* Images */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Images</h2>
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Images</h2>
         
         {/* Upload Button */}
         <div className="mb-6">
@@ -405,59 +503,108 @@ export function PropertyForm({ initialData = null }) {
           </label>
         </div>
 
-        {/* Image Grid */}
+        {/* Image Previews */}
         {formData.images.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {formData.images.map((image, index) => (
-              <div key={index} className="relative group">
-                <img
-                  src={image.url}
-                  alt={`Property ${index + 1}`}
-                  className={`w-full h-32 object-cover rounded-xl ${
-                    image.isPrimary ? 'ring-2 ring-blue-500' : ''
-                  }`}
-                />
-                {image.isPrimary && (
-                  <span className="absolute top-2 left-2 px-2 py-1 bg-blue-600 text-white text-xs rounded-lg">
-                    Primary
-                  </span>
-                )}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2">
-                  {!image.isPrimary && (
+          <div>
+            <h3 className="text-sm font-semibold text-gray-700 mb-3">All Images ({formData.images.length})</h3>
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {formData.images.map((image, index) => (
+                <div key={index} className="relative group aspect-square">
+                  <img
+                    src={image.url}
+                    alt={`Property ${index + 1}`}
+                    className={`w-full h-full object-cover rounded-lg cursor-pointer transition-all ${
+                      image.isPrimary ? 'ring-2 ring-blue-500 ring-offset-2' : 'hover:ring-2 hover:ring-blue-300'
+                    }`}
+                    onClick={() => handlePreviewImage(image.url)}
+                  />
+                  {image.isPrimary && (
+                    <span className="absolute top-1 left-1 px-1.5 py-0.5 bg-blue-600 text-white text-xs rounded-md">
+                      Primary
+                    </span>
+                  )}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
                     <button
                       type="button"
-                      onClick={() => handleSetPrimaryImage(index)}
-                      className="p-2 bg-white rounded-lg text-blue-600 hover:bg-blue-50"
-                      title="Set as primary"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePreviewImage(image.url);
+                      }}
+                      className="p-1.5 bg-white rounded-md text-blue-600 hover:bg-blue-50 cursor-pointer"
+                      title="View fullscreen"
                     >
-                      <MapPin className="w-4 h-4" />
+                      <Eye className="w-3.5 h-3.5" />
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="p-2 bg-white rounded-lg text-red-600 hover:bg-red-50"
-                    title="Remove image"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                    {!image.isPrimary && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSetPrimaryImage(index);
+                        }}
+                        className="p-1.5 bg-white rounded-md text-blue-600 hover:bg-blue-50 cursor-pointer"
+                        title="Set as primary"
+                      >
+                        <MapPin className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemoveImage(index);
+                      }}
+                      className="p-1.5 bg-white rounded-md text-red-600 hover:bg-red-50 cursor-pointer"
+                      title="Remove image"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>
 
+      {/* Fullscreen Image Preview Modal */}
+      {showFullscreenPreview && previewImage && (
+        <Portal>
+          <div 
+            className="fixed inset-0 z-1000 bg-black/95 flex items-center justify-center p-4"
+            onClick={() => setShowFullscreenPreview(false)}
+          >
+            <div 
+              className="relative max-w-full max-h-screen"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setShowFullscreenPreview(false)}
+                className="absolute -top-6 -right-90 text-white hover:text-gray-300 transition-colors z-1500 cursor-pointer"
+                aria-label="Close preview"
+              >
+                <X className="w-8 h-8" />
+              </button>
+              <img
+                src={previewImage}
+                alt="Full size preview"
+                className="max-w-full max-h-[90vh] object-contain rounded-lg"
+              />
+            </div>
+          </div>
+        </Portal>
+      )}
+
       {/* Settings */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-        <h2 className="text-lg font-bold text-gray-900 mb-6">Settings</h2>
-        <div className="flex flex-wrap gap-6">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6">Settings</h2>
+        <div className="flex flex-wrap gap-6 dark:text-white">
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"
               checked={formData.isFeatured}
               onChange={(e) => handleChange('isFeatured', e.target.checked)}
-              className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+              className="w-5 h-5 accent-blue-600 rounded focus:ring-blue-500"
             />
             <span className="text-gray-700">Featured Property</span>
           </label>
@@ -467,7 +614,7 @@ export function PropertyForm({ initialData = null }) {
               type="checkbox"
               checked={formData.isActive}
               onChange={(e) => handleChange('isActive', e.target.checked)}
-              className="w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
+              className="w-5 h-5 accent-blue-600 rounded focus:ring-blue-500"
             />
             <span className="text-gray-700">Active (Visible to Public)</span>
           </label>
@@ -479,14 +626,14 @@ export function PropertyForm({ initialData = null }) {
         <button
           type="button"
           onClick={() => router.push('/admin/properties')}
-          className="px-8 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+          className="px-8 py-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-700 transition-colors cursor-pointer"
         >
           Cancel
         </button>
         <button
           type="submit"
           disabled={submitting}
-          className="flex-1 px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          className="flex-1 px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
         >
           {submitting ? (
             <>

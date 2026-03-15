@@ -14,7 +14,7 @@ export function Hero() {
   return (
     <section className="relative h-screen flex items-center pt-20 overflow-hidden">
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800" />
       
       {/* Animated Background Shapes */}
       <motion.div
@@ -61,7 +61,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 leading-tight mb-4"
+              className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4"
             >
               Find Your{' '}
               <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -74,7 +74,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-lg text-gray-600 mb-6 max-w-xl mx-auto lg:mx-0"
+              className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-xl mx-auto lg:mx-0"
             >
               Discover the perfect plot, residential, or commercial property. 
               We offer a curated selection of premium properties with transparent 
@@ -94,7 +94,7 @@ export function Hero() {
                 Explore Properties
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-900 border-2 border-gray-200 rounded-xl font-semibold hover:border-gray-300 transition-colors">
+              <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
                 <Play className="w-5 h-5" />
                 Watch Video
               </button>
@@ -105,17 +105,17 @@ export function Hero() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-gray-200"
+              className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700"
             >
               {stats.map((stat, index) => (
                 <div key={index} className="text-center lg:text-left">
                   <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
                     <stat.icon className="w-5 h-5 text-blue-600" />
-                    <span className="text-2xl lg:text-3xl font-bold text-gray-900">
+                    <span className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
                       {stat.value}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">{stat.label}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
                 </div>
               ))}
             </motion.div>
@@ -138,19 +138,19 @@ export function Hero() {
                 <div className="h-64 bg-linear-to-br from-blue-400 to-purple-500 relative">
                   <div className="absolute inset-0 bg-black/20" />
                   <div className="absolute bottom-4 left-4 right-4">
-                    <span className="px-3 py-1 bg-white/90 rounded-full text-sm font-medium">
+                    <span className="px-3 py-1 bg-white rounded-full text-sm font-medium dark:bg-gray-800 dark:text-white">
                       Featured Property
                     </span>
                   </div>
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  <h3 className="text-xl font-bold font-inter text-gray-900 mb-2">
                     Premium Residential Plot
                   </h3>
-                  <p className="text-gray-500 mb-4">Sector 45, Gurugram</p>
+                  <p className="text-gray-500 mb-4">Cuttack, Odisha</p>
                   <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-blue-600">₹45 Lakh</span>
-                    <span className="text-sm text-gray-500">250 Sq. Yd.</span>
+                    <span className="text-2xl font-bold text-blue-600">₹55 Lakh</span>
+                    <span className="text-sm text-gray-500">550 Sq. Yd.</span>
                   </div>
                 </div>
               </motion.div>
@@ -173,7 +173,7 @@ export function Hero() {
               </motion.div>
 
               {/* Floating Card 2 */}
-              <motion.div
+              {/* <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
                 className="absolute -bottom-4 -left-8 bg-white rounded-xl shadow-xl p-4 z-20"
@@ -191,7 +191,7 @@ export function Hero() {
                     <span className="font-bold">50+</span> people viewed today
                   </p>
                 </div>
-              </motion.div>
+              </motion.div> */}
             </div>
           </motion.div>
         </div>

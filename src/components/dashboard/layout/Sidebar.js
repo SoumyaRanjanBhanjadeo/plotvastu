@@ -10,6 +10,7 @@ import {
   Settings, 
   LogOut,
   Building2,
+  Map,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -20,6 +21,7 @@ import { ThemeToggle } from '@/components/shared/ThemeToggle';
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/properties', label: 'Properties', icon: Home },
+  { href: '/admin/webGISMap', label: 'Web GIS Map', icon: Map },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
@@ -49,6 +51,8 @@ export function Sidebar({ isCollapsed, onToggle }) {
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
+      }).then(() => {
+        window.location.href = '/';
       });
     }
   };
@@ -71,7 +75,7 @@ export function Sidebar({ isCollapsed, onToggle }) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors"
+          className="p-1.5 hover:bg-gray-800 rounded-lg transition-colors cursor-pointer"
         >
           {isCollapsed ? (
             <ChevronRight className="w-5 h-5" />
