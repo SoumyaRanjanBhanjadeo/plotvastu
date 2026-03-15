@@ -32,14 +32,12 @@ class AuthController {
     }
   }
 
-
-  // Public registration
-  async register(req, res, next) {
+  // Create user — admin only (replaces the old public /register route)
+  async createUser(req, res, next) {
     try {
       const user = await authService.createUser(req.body);
-      return ResponseHandler.success(res, user, 'Registration successful', 201);
+      return ResponseHandler.success(res, user, 'User created successfully', 201);
     } catch (error) {
-      console.error('Registration error:', error.message);
       next(error);
     }
   }

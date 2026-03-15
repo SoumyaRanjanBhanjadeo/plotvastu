@@ -80,7 +80,7 @@ class AuthService {
       // Check if user already exists (case-insensitive)
       const existingUser = await User.findOne({ email: email.toLowerCase() });
       if (existingUser) {
-        console.log('User already exists:', email);
+        logger.warn(`Attempted to create duplicate user: ${email}`);
         throw new Error('User with this email already exists');
       }
 
@@ -105,7 +105,7 @@ class AuthService {
         createdAt: user.createdAt,
       };
     } catch (error) {
-      console.error('CreateUser service error:', error.message);
+      logger.error(`CreateUser service error: ${error.message}`);
       throw error;
     }
   }
