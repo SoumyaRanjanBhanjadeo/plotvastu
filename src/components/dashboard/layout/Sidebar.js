@@ -10,6 +10,7 @@ import {
   Settings, 
   LogOut,
   Building2,
+  Map,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -20,6 +21,7 @@ import { ThemeToggle } from '@/components/shared/ThemeToggle';
 const navItems = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/properties', label: 'Properties', icon: Home },
+  { href: '/admin/webGISMap', label: 'Web GIS Map', icon: Map },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];

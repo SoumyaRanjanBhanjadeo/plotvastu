@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { MapPin, Bed, Bath, Square, ArrowRight, Heart } from 'lucide-react';
+import { MapPin, Square, ArrowRight, Heart } from 'lucide-react';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
 import { StaggerContainer, StaggerItem } from '@/components/shared/animations/StaggerContainer';
 import { useFeaturedProperties } from '@/hooks/useProperties';
@@ -42,9 +42,9 @@ function PropertyCard({ property }) {
         </div>
 
         {/* Favorite Button */}
-        <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors">
+        {/* <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors">
           <Heart className="w-5 h-5" />
-        </button>
+        </button> */}
 
         {/* Price Overlay */}
         <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -80,8 +80,8 @@ export function useAuth() {
       const response = await authAPI.login(credentials);
       const { token, user } = response.data.data;
       
-      // Calculate token expiration (7 days from now, matching backend)
-      const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+      // Calculate token expiration (1 day from now, matching backend)
+      const expiresAt = Date.now() + 24 * 60 * 60 * 1000; // 1 day in milliseconds
       
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Building2, User } from 'lucide-react';
 import { PUBLIC_NAV_LINKS } from '@/lib/constants';
@@ -9,6 +10,7 @@ import { ThemeToggle } from '@/components/shared/ThemeToggle';
 
 export function Header({ onLoginClick, onRegisterClick }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-100 dark:border-gray-800 transition-colors">
@@ -32,16 +34,19 @@ export function Header({ onLoginClick, onRegisterClick }) {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
-            {PUBLIC_NAV_LINKS.map((link) => (
+            {PUBLIC_NAV_LINKS.map((link) => {
+              const isActive = pathname === link.href;
+              return (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-gray-600 in-[.dark_&]:text-gray-300 hover:text-gray-900 in-[.dark_&]:hover:text-white font-medium transition-colors relative group cursor-pointer"
+                className={`text-gray-600 in-[.dark_&]:text-gray-300 hover:text-gray-900 in-[.dark_&]:hover:text-white font-medium transition-colors relative group cursor-pointer ${isActive ? 'text-gray-900 in-[.dark_&]:text-white' : ''}`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full" />
+                <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover:w-full ${isActive ? 'w-[75%]' : 'w-0 group-hover:w-full'}`} />
               </Link>
-            ))}
+              );
+            })}
           </nav>
 
           {/* Theme Toggle & Auth Buttons */}
@@ -86,7 +91,7 @@ export function Header({ onLoginClick, onRegisterClick }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white in-[.dark_&]:bg-gray-900 border-t border-gray-100 in-[.dark_&]:border-gray-800"
+            className="md:hidden bg-white in-[.dark_&]:bg-gray-900 border-t border-gray-100 in-[.dark_&]:border-gray-800 shadow-2xl transition-all duration-300"
           >
             <nav className="px-4 py-4 space-y-2">
               {PUBLIC_NAV_LINKS.map((link) => (
@@ -105,7 +110,7 @@ export function Header({ onLoginClick, onRegisterClick }) {
                     setMobileMenuOpen(false);
                     onLoginClick();
                   }}
-                  className="flex-1 px-4 py-3 text-gray-700 in-[.dark_&]:text-gray-300 bg-gray-100 in-[.dark_&]:bg-gray-800 rounded-xl font-medium cursor-pointer"
+                  className="flex-1 px-4 py-3 bg-blue-500 dark:bg-blue-600 rounded-xl text-white in-[.dark_&]:text-gray-300 font-medium cursor-pointer"
                 >
                   Login
                 </button>

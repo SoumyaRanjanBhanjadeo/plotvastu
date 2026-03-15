@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { Building2, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import { Building2, Mail, Phone, MapPin } from 'lucide-react';
+import { FaFacebookF, FaXTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa6';
 
 export function Footer() {
   const [currentYear, setCurrentYear] = useState(2024);
@@ -13,7 +14,7 @@ export function Footer() {
 
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand */}
           <div className="lg:col-span-1">
@@ -24,7 +25,7 @@ export function Footer() {
               <span className="text-xl font-bold">PlotVastu</span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
-              Your trusted partner in finding the perfect property. We offer a wide range of plots, 
+              Your trusted partner in finding the perfect property. We offer a wide range of plots,
               residential, and commercial properties.
             </p>
           </div>
@@ -84,7 +85,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-3 text-gray-400">
                 <Phone className="w-4 h-4" />
-                <span>+91 98765 43210</span>
+                <span>+91 8249307969</span>
               </li>
               <li className="flex items-center gap-3 text-gray-400">
                 <Mail className="w-4 h-4" />
@@ -99,25 +100,25 @@ export function Footer() {
             {/* Social Links */}
             <div className="flex items-center gap-4 mt-6">
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <Facebook className="w-4 h-4" />
+                <FaFacebookF className="w-4 h-4" />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <Twitter className="w-4 h-4" />
+                <FaXTwitter className="w-4 h-4" />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <Instagram className="w-4 h-4" />
+                <FaInstagram className="w-4 h-4" />
               </a>
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors">
-                <Linkedin className="w-4 h-4" />
+                <FaLinkedin className="w-4 h-4" />
               </a>
             </div>
           </div>
         </div>
-
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400 text-sm">
-          <p>&copy; {currentYear} PlotVastu. All rights reserved.</p>
-        </div>
+      </div>
+      
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-800 p-4 text-center text-gray-400 text-sm">
+        <p>&copy; {currentYear} PlotVastu. All rights reserved.</p>
       </div>
     </footer>
   );

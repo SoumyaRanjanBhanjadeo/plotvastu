@@ -48,7 +48,7 @@ export default function EditPropertyPage() {
   }
 
   return (
-    <div>
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <FadeIn>
         <div className="flex items-center gap-4 mb-8">

@@ -8,12 +8,9 @@ import {
   MapPin, 
   Send, 
   Loader2,
-  Clock,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin
+  Clock
 } from 'lucide-react';
+import { FaFacebookF, FaXTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa6';
 import { Header } from '@/components/public/layout/Header';
 import { Footer } from '@/components/public/layout/Footer';
 import { LoginModal } from '@/components/public/home/LoginModal';
@@ -126,7 +123,7 @@ export default function ContactPage() {
                   <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Follow Us</h3>
                     <div className="flex gap-3">
-                      {[Facebook, Twitter, Instagram, Linkedin].map((Icon, index) => (
+                      {[FaFacebookF, FaXTwitter, FaInstagram, FaLinkedin].map((Icon, index) => (
                         <a
                           key={index}
                           href="#"
@@ -156,7 +153,7 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           required
                           placeholder="John Doe"
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                       <div>
@@ -169,7 +166,7 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
                           placeholder="john@example.com"
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -184,7 +181,7 @@ export default function ContactPage() {
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                           placeholder="+91 98765 43210"
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                       <div>
@@ -197,7 +194,7 @@ export default function ContactPage() {
                           onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                           required
                           placeholder="How can we help?"
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>
@@ -212,14 +209,14 @@ export default function ContactPage() {
                         required
                         rows={5}
                         placeholder="Tell us more about your inquiry..."
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {submitting ? (
                         <>

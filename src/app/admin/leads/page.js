@@ -104,7 +104,7 @@ export default function LeadsPage() {
   };
 
   return (
-    <div>
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <FadeIn>
         <div className="mb-8">
@@ -210,13 +210,15 @@ export default function LeadsPage() {
                                 setUpdateStatus(lead.status);
                                 setNotes(lead.notes || '');
                               }}
-                              className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors"
+                              className="p-2 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-lg hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors cursor-pointer"
+                              title="View Lead"
                             >
                               <Eye className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleDeleteLead(lead._id)}
-                              className="p-2 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors"
+                              className="p-2 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 rounded-lg hover:bg-red-200 dark:hover:bg-red-800 transition-colors cursor-pointer"
+                              title="Delete Lead"
                             >
                               <XCircle className="w-4 h-4" />
                             </button>
@@ -296,13 +298,13 @@ export default function LeadsPage() {
             <div className="p-6 border-t border-gray-100 dark:border-gray-700 flex gap-3">
               <button
                 onClick={() => setSelectedLead(null)}
-                className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                className="flex-1 px-4 py-3 bg-red-500 dark:bg-red-700 text-white rounded-xl font-medium hover:bg-red-700 dark:hover:bg-red-600 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 onClick={handleUpdateLead}
-                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors cursor-pointer"
               >
                 Update Lead
               </button>

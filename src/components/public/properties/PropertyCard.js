@@ -44,9 +44,9 @@ export function PropertyCard({ property }) {
         </div>
 
         {/* Favorite Button */}
-        <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors">
+        {/* <button className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
           <Heart className="w-5 h-5" />
-        </button>
+        </button> */}
 
         {/* Price Overlay */}
         <div className="absolute bottom-4 left-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

@@ -8,9 +8,7 @@ import {
   Square, 
   ArrowLeft, 
   Phone, 
-  Mail, 
-  Share2,
-  Heart,
+  Mail,
   Loader2,
   Check,
   Building2
@@ -19,6 +17,7 @@ import { Header } from '@/components/public/layout/Header';
 import { Footer } from '@/components/public/layout/Footer';
 import { LoginModal } from '@/components/public/home/LoginModal';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
+import { PropertyMapModal } from './PropertyMapModal';
 import { useProperty } from '@/hooks/useProperties';
 import { inquiryAPI } from '@/lib/api';
 import { PROPERTY_TYPES, PROPERTY_STATUS, PROPERTY_FEATURES } from '@/lib/constants';
@@ -28,6 +27,7 @@ export default function PropertyDetailPage() {
   const params = useParams();
   const { property, loading, error } = useProperty(params.id);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [mapModalOpen, setMapModalOpen] = useState(false);
   const [inquiryForm, setInquiryForm] = useState({
     name: '',
     email: '',
@@ -113,8 +113,8 @@ export default function PropertyDetailPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Image Gallery */}
               <FadeIn>
-                <div className="bg-white rounded-2xl overflow-hidden shadow-sm">
-                  <div className="relative h-96 lg:h-125">
+                <div className="bg-white shadow-sm">
+                  <div className="relative rounded-2xl overflow-hidden h-96 lg:h-125">
                     <img
                       src={primaryImage || '/placeholder-property.jpg'}
                       alt={property.title}
@@ -136,7 +136,7 @@ export default function PropertyDetailPage() {
                   
                   {/* Thumbnail Grid */}
                   {property.images && property.images.length > 1 && (
-                    <div className="p-4 grid grid-cols-4 gap-2">
+                    <div className="mt-2 md:mt-5 grid grid-cols-4 gap-2">
                       {property.images.slice(0, 4).map((img, idx) => (
                         <div key={idx} className="relative aspect-square rounded-lg overflow-hidden">
                           <img
@@ -153,14 +153,22 @@ export default function PropertyDetailPage() {
 
               {/* Property Details */}
               <FadeIn delay={0.1}>
-                <div className="bg-white rounded-2xl p-6 lg:p-8 shadow-sm">
+                <div className="bg-white rounded-2xl px-4 py-3 lg:px-1 lg:py-4 shadow-sm">
                   <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
                     {property.title}
                   </h1>
                   
-                  <div className="flex items-center gap-2 text-gray-500 mb-6">
-                    <MapPin className="w-5 h-5" />
-                    <span>{property.location?.address}, {property.location?.city}, {property.location?.state}</span>
+                  <div className="flex items-center gap-3 text-gray-500 mb-6">
+                    <button 
+                      onClick={() => setMapModalOpen(true)}
+                      className="w-10 h-10 shrink-0 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center transition-colors cursor-pointer group"
+                      title="View on Map"
+                    >
+                      <MapPin className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
+                    </button>
+                    <span className="text-gray-700 font-medium">
+                      {property.location?.address}, {property.location?.city}, {property.location?.state} {property.location?.pincode}
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-6 py-6 border-y border-gray-100">
@@ -238,7 +246,7 @@ export default function PropertyDetailPage() {
                         value={inquiryForm.name}
                         onChange={(e) => setInquiryForm({ ...inquiryForm, name: e.target.value })}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -248,7 +256,7 @@ export default function PropertyDetailPage() {
                         value={inquiryForm.email}
                         onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -258,7 +266,7 @@ export default function PropertyDetailPage() {
                         value={inquiryForm.phone}
                         onChange={(e) => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -268,13 +276,13 @@ export default function PropertyDetailPage() {
                         onChange={(e) => setInquiryForm({ ...inquiryForm, message: e.target.value })}
                         rows={3}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={submitting}
-                      className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {submitting ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -293,7 +301,7 @@ export default function PropertyDetailPage() {
                   <div className="space-y-4">
                     <a href="tel:+919876543210" className="flex items-center gap-3 text-gray-600 hover:text-blue-600">
                       <Phone className="w-5 h-5" />
-                      <span>+91 98765 43210</span>
+                      <span>+91 8249307969</span>
                     </a>
                     <a href="mailto:info@plotvastu.com" className="flex items-center gap-3 text-gray-600 hover:text-blue-600">
                       <Mail className="w-5 h-5" />
@@ -309,6 +317,13 @@ export default function PropertyDetailPage() {
 
       <Footer />
       <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+      {property && (
+        <PropertyMapModal 
+          isOpen={mapModalOpen} 
+          onClose={() => setMapModalOpen(false)} 
+          coordinates={property.location?.coordinates} 
+        />
+      )}
     </>
   );
 }

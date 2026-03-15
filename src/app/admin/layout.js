@@ -19,6 +19,21 @@ export default function AdminLayout({ children }) {
     }
   }, [loading, isAuthenticated, showSessionExpired, router]);
 
+  // Listen for sidebar toggle events from child components
+  useEffect(() => {
+    const handleSidebarToggle = (event) => {
+      if (event.detail?.collapsed !== undefined) {
+        setIsCollapsed(event.detail.collapsed);
+      }
+    };
+
+    document.addEventListener('sidebar-toggle', handleSidebarToggle);
+
+    return () => {
+      document.removeEventListener('sidebar-toggle', handleSidebarToggle);
+    };
+  }, []);
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -50,9 +65,7 @@ export default function AdminLayout({ children }) {
             isCollapsed ? 'ml-20' : 'ml-64'
           }`}
         >
-          <div className="p-6 lg:p-8">
             {children}
-          </div>
         </main>
       </div>
     </>

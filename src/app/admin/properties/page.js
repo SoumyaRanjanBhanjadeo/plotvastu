@@ -10,19 +10,18 @@ import {
   Trash2, 
   Star,
   Eye,
-  Loader2,
-  AlertCircle
+  Loader2
 } from 'lucide-react';
 import { propertyAPI } from '@/lib/api';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
 import { PROPERTY_TYPES, PROPERTY_STATUS } from '@/lib/constants';
 import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 export default function PropertiesAdminPage() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const fetchProperties = async () => {
     try {
@@ -44,11 +43,28 @@ export default function PropertiesAdminPage() {
     try {
       await propertyAPI.delete(id);
       toast.success('Property deleted successfully');
-      setDeleteConfirm(null);
       fetchProperties();
     } catch (error) {
       toast.error('Failed to delete property');
     }
+  };
+
+  const confirmDelete = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleDelete(id);
+      }
+    });
   };
 
   const handleToggleFeatured = async (id) => {
@@ -65,7 +81,7 @@ export default function PropertiesAdminPage() {
   const getStatusConfig = (status) => PROPERTY_STATUS.find(s => s.value === status);
 
   return (
-    <div>
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <FadeIn>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -197,7 +213,7 @@ export default function PropertiesAdminPage() {
                               <Edit2 className="w-4 h-4" />
                             </Link>
                             <button
-                              onClick={() => setDeleteConfirm(property._id)}
+                              onClick={() => confirmDelete(property._id)}
                               className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -213,39 +229,6 @@ export default function PropertiesAdminPage() {
           )}
         </div>
       </FadeIn>
-
-      {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4"
-          >
-            <div className="flex items-center gap-3 text-red-600 mb-4">
-              <AlertCircle className="w-6 h-6" />
-              <h3 className="text-lg font-bold">Confirm Delete</h3>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this property? This action cannot be undone.
-            </p>
-            <div className="flex gap-3">
-              <button
-                onClick={() => setDeleteConfirm(null)}
-                className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => handleDelete(deleteConfirm)}
-                className="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-700 transition-colors"
-              >
-                Delete
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }

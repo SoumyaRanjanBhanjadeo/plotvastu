@@ -1,0 +1,82 @@
+/* src/app/admin/webGISMap/webGISMap.css */
+
+.custom-map-controls-container {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.custom-map-controls-container>* {
+  pointer-events: auto;
+}
+
+/* Compass */
+.compass-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+/* Tool Buttons Stack */
+.map-tools-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.map-tool-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  background-color: white;
+  border: 1px solid #f0f0f0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  transition: all 0.2s ease;
+}
+
+.map-tool-btn:hover {
+  background-color: #f9fafb;
+  transform: scale(1.05);
+  color: #111827;
+}
+
+.map-tool-btn:active {
+  transform: scale(0.95);
+}
+
+.map-tool-btn svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Bottom Row: Coords + Scale */
+.bottom-info-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 20px;
+  width: 100%;
+}
+
+.coordinates-box {
+  background-color: rgba(97, 97, 97, 0.95);
+  color: #f3f4f6;
+  border-radius: 4px;
+  padding: 0px 5px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}

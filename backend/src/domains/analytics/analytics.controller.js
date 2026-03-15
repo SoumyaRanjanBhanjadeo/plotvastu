@@ -5,13 +5,21 @@ const Inquiry = require('../inquiry/inquiry.model');
 const ResponseHandler = require('../../utils/response');
 
 class AnalyticsController {
+  constructor() {
+    // Bind methods to preserve 'this' context
+    this.getDashboardStats = this.getDashboardStats.bind(this);
+    this.getPropertyAnalytics = this.getPropertyAnalytics.bind(this);
+    this.getLeadAnalytics = this.getLeadAnalytics.bind(this);
+    this._getMonthlyData = this._getMonthlyData.bind(this);
+  }
+
   // Get dashboard overview stats
   async getDashboardStats(req, res, next) {
     try {
       const [propertyStats, inquiryStats, last6Months] = await Promise.all([
         propertyService.getPropertyStats(),
         inquiryService.getInquiryStats(),
-        this.getMonthlyData(),
+        this._getMonthlyData(),
       ]);
 
       const dashboardStats = {
@@ -134,7 +142,7 @@ class AnalyticsController {
   }
 
   // Helper method to get monthly data
-  async getMonthlyData() {
+  async _getMonthlyData() {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
 

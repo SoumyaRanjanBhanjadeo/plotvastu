@@ -16,6 +16,7 @@ class MediaController {
 
       return ResponseHandler.success(res, result, 'Image uploaded successfully');
     } catch (error) {
+      console.error('Upload single image error:', error);
       next(error);
     }
   }
@@ -40,6 +41,7 @@ class MediaController {
 
       return ResponseHandler.success(res, results, 'Images uploaded successfully');
     } catch (error) {
+      console.error('Upload multiple images error:', error);
       next(error);
     }
   }

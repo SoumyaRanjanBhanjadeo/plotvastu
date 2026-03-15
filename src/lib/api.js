@@ -81,14 +81,10 @@ export const inquiryAPI = {
 
 // Media API
 export const mediaAPI = {
-  upload: (formData) =>
-    api.post('/media/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
-  uploadMultiple: (formData) =>
-    api.post('/media/upload-multiple', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    }),
+  upload: (base64Image) =>
+    api.post('/media/upload', { image: base64Image }),
+  uploadMultiple: (data) =>
+    api.post('/media/upload-multiple', data),
   delete: (publicId) => api.delete(`/media/${publicId}`),
 };
 

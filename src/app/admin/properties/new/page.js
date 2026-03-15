@@ -7,7 +7,7 @@ import { FadeIn } from '@/components/shared/animations/FadeIn';
 
 export default function NewPropertyPage() {
   return (
-    <div>
+    <div className="p-6 lg:p-8">
       {/* Header */}
       <FadeIn>
         <div className="flex items-center gap-4 mb-8">
