@@ -16,6 +16,7 @@ export const PROPERTY_STATUS = [
 
 // Area Units
 export const AREA_UNITS = [
+  { value: 'decimal', label: 'Decimal' },
   { value: 'sqft', label: 'Sq. Ft.' },
   { value: 'sqyd', label: 'Sq. Yard' },
   { value: 'acre', label: 'Acre' },

@@ -8,9 +8,9 @@ import { PROPERTY_TYPES, PROPERTY_STATUS } from '@/lib/constants';
 export function PropertyCard({ property }) {
   const typeLabel = PROPERTY_TYPES.find(t => t.value === property.type)?.label || property.type;
   const statusConfig = PROPERTY_STATUS.find(s => s.value === property.status);
-  const primaryImage = property.images?.find(img => img.isPrimary)?.url || 
-                       property.images?.[0]?.url || 
-                       '/placeholder-property.jpg';
+  const primaryImage = property.images?.find(img => img.isPrimary)?.url ||
+    property.images?.[0]?.url ||
+    '/placeholder-property.jpg';
 
   const statusColors = {
     green: 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300',
@@ -32,7 +32,7 @@ export function PropertyCard({ property }) {
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-        
+
         {/* Badges */}
         <div className="absolute top-4 left-4 flex flex-wrap gap-2">
           <span className="px-3 py-1 bg-blue-600 text-white text-xs font-medium rounded-full">
@@ -64,7 +64,7 @@ export function PropertyCard({ property }) {
         <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">
           {property.title}
         </h3>
-        
+
         <div className="flex items-center gap-1 text-gray-500 dark:text-gray-400 text-sm mb-3">
           <MapPin className="w-4 h-4 shrink-0" />
           <span className="line-clamp-1">{property.location?.address}, {property.location?.city}</span>
@@ -84,14 +84,14 @@ export function PropertyCard({ property }) {
         {/* Features Tags */}
         {property.features && property.features.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-4">
-            {property.features.slice(0, 3).map((feature, idx) => (
+            {property.features.slice(0, 2).map((feature, idx) => (
               <span key={idx} className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-md">
                 {feature}
               </span>
             ))}
-            {property.features.length > 3 && (
+            {property.features.length > 2 && (
               <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs rounded-md">
-                +{property.features.length - 3}
+                +{property.features.length - 2}
               </span>
             )}
           </div>

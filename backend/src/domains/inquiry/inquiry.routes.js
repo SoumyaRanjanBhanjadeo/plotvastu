@@ -2,12 +2,14 @@ const express = require('express');
 const { body } = require('express-validator');
 const inquiryController = require('./inquiry.controller');
 const { authMiddleware, adminOnly } = require('../auth/auth.middleware');
+const { publicFormLimiter } = require('../../middleware/rateLimiters');
 
 const router = express.Router();
 
-// Public routes
+// Public routes — rate limited to prevent spam (10 per hour per IP)
 router.post(
   '/',
+  publicFormLimiter,
   [
     body('propertyId').notEmpty().withMessage('Property ID is required'),
     body('name').notEmpty().trim().withMessage('Name is required'),

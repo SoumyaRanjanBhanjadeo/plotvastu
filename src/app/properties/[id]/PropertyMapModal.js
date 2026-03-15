@@ -95,7 +95,7 @@ export function PropertyMapModal({ isOpen, onClose, coordinates }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-100"
           />
 
           {/* Modal content */}
@@ -103,7 +103,7 @@ export function PropertyMapModal({ isOpen, onClose, coordinates }) {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-4 right-4 top-4 bottom-4 md:left-[10%] md:right-[10%] md:top-[10%] md:bottom-[10%] bg-white rounded-2xl shadow-2xl z-[101] overflow-hidden flex flex-col"
+            className="fixed left-4 right-4 top-4 bottom-4 md:left-[10%] md:right-[10%] md:top-[10%] md:bottom-[10%] bg-white rounded-2xl shadow-2xl z-101 overflow-hidden flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white">

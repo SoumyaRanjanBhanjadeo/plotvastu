@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { 
-  Plus, 
-  Search, 
-  Edit2, 
-  Trash2, 
+import {
+  Plus,
+  Search,
+  Edit2,
+  Trash2,
   Star,
   Eye,
   Loader2
@@ -140,8 +140,8 @@ export default function PropertiesAdminPage() {
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {properties.map((property) => {
                     const statusConfig = getStatusConfig(property.status);
-                    const primaryImage = property.images?.find(img => img.isPrimary)?.url || 
-                                         property.images?.[0]?.url;
+                    const primaryImage = property.images?.find(img => img.isPrimary)?.url ||
+                      property.images?.[0]?.url;
 
                     return (
                       <tr key={property._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
@@ -179,11 +179,10 @@ export default function PropertiesAdminPage() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`px-3 py-1 rounded-full text-sm ${
-                            statusConfig?.color === 'green' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
+                          <span className={`px-3 py-1 rounded-full text-sm ${statusConfig?.color === 'green' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300' :
                             statusConfig?.color === 'red' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300' :
-                            'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300'
-                          }`}>
+                              'bg-amber-100 dark:bg-amber-900 text-amber-700 dark:text-amber-300'
+                            }`}>
                             {statusConfig?.label || property.status}
                           </span>
                         </td>
@@ -197,11 +196,10 @@ export default function PropertiesAdminPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleToggleFeatured(property._id)}
-                              className={`p-2 rounded-lg transition-colors ${
-                                property.isFeatured 
-                                  ? 'bg-amber-100 text-amber-600' 
-                                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                              }`}
+                              className={`p-2 rounded-lg transition-colors cursor-pointer ${property.isFeatured
+                                ? 'bg-amber-100 text-amber-600'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                }`}
                               title={property.isFeatured ? 'Remove from featured' : 'Mark as featured'}
                             >
                               <Star className={`w-4 h-4 ${property.isFeatured ? 'fill-current' : ''}`} />
@@ -214,7 +212,7 @@ export default function PropertiesAdminPage() {
                             </Link>
                             <button
                               onClick={() => confirmDelete(property._id)}
-                              className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                              className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>

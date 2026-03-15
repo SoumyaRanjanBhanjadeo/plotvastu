@@ -2,10 +2,10 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
 
 const corsMiddleware = require('./middleware/cors');
 const errorHandler = require('./middleware/errorHandler');
+const { generalLimiter } = require('./middleware/rateLimiters');
 
 // Import routes
 const authRoutes = require('./domains/auth/auth.routes');
@@ -19,14 +19,6 @@ const app = express();
 // Security middleware
 app.use(helmet());
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
-});
-app.use('/api/', limiter);
-
 // CORS
 app.use(corsMiddleware);
 
@@ -39,21 +31,33 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Health check endpoint
+// Apply general rate limiter to all /api/v1/ routes
+app.use('/api/v1/', generalLimiter);
+
+// Health check endpoint (no rate limiter)
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'success',
     message: 'Server is running',
+    version: 'v1',
     timestamp: new Date().toISOString(),
   });
 });
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/properties', propertyRoutes);
-app.use('/api/inquiries', inquiryRoutes);
-app.use('/api/media', mediaRoutes);
-app.use('/api/analytics', analyticsRoutes);
+// API v1 Routes
+app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/properties', propertyRoutes);
+app.use('/api/v1/inquiries', inquiryRoutes);
+app.use('/api/v1/media', mediaRoutes);
+app.use('/api/v1/analytics', analyticsRoutes);
+
+// Backward-compatibility: inform old clients of the new API version
+app.use('/api', (req, res) => {
+  res.status(410).json({
+    success: false,
+    message: 'This API version is no longer supported. Please use /api/v1/',
+  });
+});
 
 // 404 handler
 app.use((req, res) => {

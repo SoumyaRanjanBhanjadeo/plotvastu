@@ -3,12 +3,22 @@
 import { useEffect, useRef, useState } from 'react';
 import 'ol/ol.css';
 import './webGISMap.css';
+import { MapPin, Layers, List, BarChart2 } from 'lucide-react';
+import { TbRulerMeasure } from "react-icons/tb";
+import LocationTool from './components/LocationTool';
+import MeasurementTool from './components/MeasurementTool';
+import LayersTool from './components/LayersTool';
+import LegendTool from './components/LegendTool';
+import AnalyticsTool from './components/AnalyticsTool';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import { fromLonLat, toLonLat, getPointResolution } from 'ol/proj';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
+import { Feature } from 'ol';
+import Point from 'ol/geom/Point';
+import { Style, Icon } from 'ol/style';
 import XYZ from 'ol/source/XYZ';
 import { defaults as defaultControls } from 'ol/control';
 
@@ -59,6 +69,39 @@ const WebGISMapPage = () => {
   const [pointerCoords, setPointerCoords] = useState({ lon: 81.79883, lat: 30.03175 });
   const [scaleData, setScaleData] = useState({ ratio: '1:1,000,000', width: 140, halfLabel: '25 km', fullLabel: '50 km' });
   const menuRef = useRef(null);
+  const vectorSourceRef = useRef(null);
+
+  const [activeTools, setActiveTools] = useState({
+    location: false,
+    measurement: false,
+    layers: false,
+    legend: false,
+    analytics: false,
+  });
+
+  const toggleTool = (tool) => {
+    setActiveTools(prev => {
+      // If the tool is already open, simply close it
+      if (prev[tool]) {
+        if (tool === 'location' && vectorSourceRef.current) {
+          vectorSourceRef.current.clear(); // Clear placed marker when tool is closed
+        }
+        return { ...prev, [tool]: false };
+      }
+
+      // If we are opening a new tool, close all others first
+      if (vectorSourceRef.current) vectorSourceRef.current.clear(); // Always clear markers when switching tools
+
+      return {
+        location: false,
+        measurement: false,
+        layers: false,
+        legend: false,
+        analytics: false,
+        [tool]: true
+      };
+    });
+  };
 
   // Auto-collapse sidebar when component mounts
   useEffect(() => {
@@ -126,6 +169,42 @@ const WebGISMapPage = () => {
     }
   };
 
+  const handleGoToLocation = (lon, lat) => {
+    if (!mapInstance.current || !vectorSourceRef.current) return;
+
+    // 1. Clear any existing markers
+    vectorSourceRef.current.clear();
+
+    // 2. Create coordinates in map projection
+    const coordinates = fromLonLat([lon, lat]);
+
+    // 3. Create a new Feature with a Point geometry
+    const markerFeature = new Feature({
+      geometry: new Point(coordinates),
+    });
+
+    // 4. Set the icon style for the marker
+    markerFeature.setStyle(
+      new Style({
+        image: new Icon({
+          anchor: [0.5, 1],
+          src: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // A standard map pin icon URL
+          scale: 0.05,
+        }),
+      })
+    );
+
+    // 5. Add the marker to the vector source
+    vectorSourceRef.current.addFeature(markerFeature);
+
+    // 6. Animate view to the dropped marker
+    mapInstance.current.getView().animate({
+      center: coordinates,
+      zoom: 15,
+      duration: 1000,
+    });
+  };
+
   useEffect(() => {
     if (!mapRef.current) return;
 
@@ -164,6 +243,7 @@ const WebGISMapPage = () => {
 
     // Create vector source for markers
     const vectorSource = new VectorSource();
+    vectorSourceRef.current = vectorSource;
 
     // Initialize the map (fixes the duplicate item added error by proper initialization)
     const view = new View({
@@ -402,6 +482,32 @@ const WebGISMapPage = () => {
         </div>
 
       </div>
+
+      {/* Top Right Tools */}
+      <div className="top-right-tools-container">
+        <button className={`top-right-tool-btn ${activeTools.location ? 'active' : ''}`} onClick={() => toggleTool('location')} title="Location">
+          <MapPin />
+        </button>
+        <button className={`top-right-tool-btn ${activeTools.measurement ? 'active' : ''}`} onClick={() => toggleTool('measurement')} title="Measurement">
+          <TbRulerMeasure />
+        </button>
+        <button className={`top-right-tool-btn ${activeTools.layers ? 'active' : ''}`} onClick={() => toggleTool('layers')} title="Layers">
+          <Layers />
+        </button>
+        <button className={`top-right-tool-btn ${activeTools.legend ? 'active' : ''}`} onClick={() => toggleTool('legend')} title="Legend">
+          <List />
+        </button>
+        {/* <button className={`top-right-tool-btn ${activeTools.analytics ? 'active' : ''}`} onClick={() => toggleTool('analytics')} title="Analytics">
+          <BarChart2 />
+        </button> */}
+      </div>
+
+      {/* Draggable Tool Panels */}
+      <LocationTool isOpen={activeTools.location} onClose={() => toggleTool('location')} onGoTo={handleGoToLocation} />
+      <MeasurementTool isOpen={activeTools.measurement} onClose={() => toggleTool('measurement')} mapInstance={mapInstance} />
+      <LayersTool isOpen={activeTools.layers} onClose={() => toggleTool('layers')} />
+      <LegendTool isOpen={activeTools.legend} onClose={() => toggleTool('legend')} />
+      {/* <AnalyticsTool isOpen={activeTools.analytics} onClose={() => toggleTool('analytics')} /> */}
 
     </div>
   );

@@ -49,7 +49,7 @@ const propertySchema = new mongoose.Schema(
       unit: {
         type: String,
         required: [true, 'Please specify area unit'],
-        enum: ['sqft', 'sqyd', 'acre', 'hectare'],
+        enum: ['decimal', 'sqft', 'sqyd', 'acre', 'hectare'],
       },
     },
     location: {
@@ -129,7 +129,7 @@ propertySchema.index({ 'price.amount': 1 });
 propertySchema.index({ isFeatured: 1, isActive: 1 });
 
 // Virtual for formatted price
-propertySchema.virtual('formattedPrice').get(function() {
+propertySchema.virtual('formattedPrice').get(function () {
   const symbol = this.price.currency === 'INR' ? '₹' : '$';
   return `${symbol}${this.price.amount.toLocaleString('en-IN')}`;
 });

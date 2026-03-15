@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
 
 // Create axios instance
 const api = axios.create({
@@ -46,7 +46,8 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
-  register: (userData) => api.post('/auth/register', userData),
+  // register endpoint removed — user creation is admin-only via /auth/create-user
+  createUser: (userData) => api.post('/auth/create-user', userData),
   getMe: () => api.get('/auth/me'),
   logout: () => api.post('/auth/logout'),
   updateProfile: (data) => api.put('/auth/profile', data),
