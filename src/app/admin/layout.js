@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { Sidebar } from '@/components/dashboard/layout/Sidebar';
+import Header from '@/components/dashboard/layout/Header';
 import { SessionExpiredModal } from '@/components/shared/SessionExpiredModal';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
@@ -65,6 +66,7 @@ export default function AdminLayout({ children }) {
             isCollapsed ? 'ml-20' : 'ml-64'
           }`}
         >
+            <Header />
             {children}
         </main>
       </div>

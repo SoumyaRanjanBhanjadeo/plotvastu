@@ -2,10 +2,35 @@ const inquiryService = require('./inquiry.service');
 const ResponseHandler = require('../../utils/response');
 
 class InquiryController {
+  constructor() {
+    this.clients = [];
+  }
+
+  // SSE Stream
+  streamInquiries = (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    
+    res.write('data: {"connected": true}\n\n');
+
+    const newClient = { id: Date.now(), res };
+    this.clients.push(newClient);
+
+    req.on('close', () => {
+      this.clients = this.clients.filter(client => client.id !== newClient.id);
+    });
+  };
+
   // Create inquiry (Public)
-  async createInquiry(req, res, next) {
+  createInquiry = async (req, res, next) => {
     try {
       const inquiry = await inquiryService.createInquiry(req.body);
+      
+      this.clients.forEach(client => {
+        client.res.write(`data: ${JSON.stringify(inquiry)}\n\n`);
+      });
+
       return ResponseHandler.success(
         res,
         inquiry,
@@ -15,7 +40,7 @@ class InquiryController {
     } catch (error) {
       next(error);
     }
-  }
+  };
 
   // Get all inquiries (Admin)
   async getInquiries(req, res, next) {

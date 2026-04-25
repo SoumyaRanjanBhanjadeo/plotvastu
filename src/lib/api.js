@@ -96,4 +96,9 @@ export const analyticsAPI = {
   getLeads: () => api.get('/analytics/leads'),
 };
 
+// Contact API
+export const contactAPI = {
+  send: (data) => api.post('/contact', data),
+};
+
 export default api;

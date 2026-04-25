@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { 
-  MapPin, 
-  Square, 
-  ArrowLeft, 
-  Phone, 
+import {
+  MapPin,
+  Square,
+  ArrowLeft,
+  Phone,
   Mail,
   Loader2,
   Check,
@@ -94,13 +94,13 @@ export default function PropertyDetailPage() {
     <>
       <Toaster position="top-right" />
       <Header onLoginClick={() => setLoginModalOpen(true)} />
-      
-      <main className="pt-20 min-h-screen bg-gray-50">
+
+      <main className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Back Button */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Link
             href="/properties"
-            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 dark:bg-white/70 dark:hover:bg-white/90 dark:p-2 rounded-xl dark:text-black transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to Properties
@@ -113,7 +113,7 @@ export default function PropertyDetailPage() {
             <div className="lg:col-span-2 space-y-6">
               {/* Image Gallery */}
               <FadeIn>
-                <div className="bg-white shadow-sm">
+                <div className="bg-white dark:bg-gray-900 shadow-sm">
                   <div className="relative rounded-2xl overflow-hidden h-96 lg:h-125">
                     <img
                       src={primaryImage || '/placeholder-property.jpg'}
@@ -124,16 +124,15 @@ export default function PropertyDetailPage() {
                       <span className="px-4 py-2 bg-blue-600 text-white rounded-full text-sm font-medium">
                         {typeLabel}
                       </span>
-                      <span className={`px-4 py-2 rounded-full text-sm font-medium ${
-                        statusConfig?.color === 'green' ? 'bg-green-500 text-white' :
+                      <span className={`px-4 py-2 rounded-full text-sm font-medium ${statusConfig?.color === 'green' ? 'bg-green-500 text-white' :
                         statusConfig?.color === 'red' ? 'bg-red-500 text-white' :
-                        'bg-amber-500 text-white'
-                      }`}>
+                          'bg-amber-500 text-white'
+                        }`}>
                         {statusConfig?.label || property.status}
                       </span>
                     </div>
                   </div>
-                  
+
                   {/* Thumbnail Grid */}
                   {property.images && property.images.length > 1 && (
                     <div className="mt-2 md:mt-5 grid grid-cols-4 gap-2">
@@ -153,20 +152,20 @@ export default function PropertyDetailPage() {
 
               {/* Property Details */}
               <FadeIn delay={0.1}>
-                <div className="bg-white rounded-2xl px-4 py-3 lg:px-1 lg:py-4 shadow-sm">
-                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl px-4 py-3 lg:px-1 lg:py-4 shadow-sm">
+                  <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white mb-4">
                     {property.title}
                   </h1>
-                  
-                  <div className="flex items-center gap-3 text-gray-500 mb-6">
-                    <button 
+
+                  <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mb-6">
+                    <button
                       onClick={() => setMapModalOpen(true)}
                       className="w-10 h-10 shrink-0 bg-red-50 hover:bg-red-100 rounded-full flex items-center justify-center transition-colors cursor-pointer group"
                       title="View on Map"
                     >
                       <MapPin className="w-5 h-5 text-red-500 group-hover:scale-110 transition-transform" />
                     </button>
-                    <span className="text-gray-700 font-medium">
+                    <span className="text-gray-700 dark:text-gray-400 font-medium">
                       {property.location?.address}, {property.location?.city}, {property.location?.state} {property.location?.pincode}
                     </span>
                   </div>
@@ -177,8 +176,8 @@ export default function PropertyDetailPage() {
                         <Square className="w-6 h-6 text-blue-600" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Area</p>
-                        <p className="font-semibold text-gray-900">{property.area?.value} {property.area?.unit}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Area</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{property.area?.value} {property.area?.unit}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -186,15 +185,15 @@ export default function PropertyDetailPage() {
                         <Building2 className="w-6 h-6 text-purple-600" />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500">Type</p>
-                        <p className="font-semibold text-gray-900">{typeLabel}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">Type</p>
+                        <p className="font-semibold text-gray-900 dark:text-white">{typeLabel}</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-4">Description</h2>
-                    <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Description</h2>
+                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-line">
                       {property.description}
                     </p>
                   </div>
@@ -202,12 +201,12 @@ export default function PropertyDetailPage() {
                   {/* Features */}
                   {property.features && property.features.length > 0 && (
                     <div className="mt-8">
-                      <h2 className="text-lg font-bold text-gray-900 mb-4">Features</h2>
+                      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Features</h2>
                       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                         {property.features.map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2">
                             <Check className="w-4 h-4 text-green-600" />
-                            <span className="text-gray-600">{feature}</span>
+                            <span className="text-gray-600 dark:text-gray-300">{feature}</span>
                           </div>
                         ))}
                       </div>
@@ -221,9 +220,9 @@ export default function PropertyDetailPage() {
             <div className="space-y-6">
               {/* Price Card */}
               <FadeIn delay={0.2}>
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <p className="text-sm text-gray-500 mb-2">Price</p>
-                  <p className="text-3xl font-bold text-gray-900">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Price</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">
                     {property.formattedPrice || `₹${property.price?.amount?.toLocaleString('en-IN')}`}
                   </p>
                   {property.price?.negotiable && (
@@ -236,8 +235,8 @@ export default function PropertyDetailPage() {
 
               {/* Inquiry Form */}
               <FadeIn delay={0.3}>
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Interested?</h3>
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Interested?</h3>
                   <form onSubmit={handleInquirySubmit} className="space-y-4">
                     <div>
                       <input
@@ -246,7 +245,7 @@ export default function PropertyDetailPage() {
                         value={inquiryForm.name}
                         onChange={(e) => setInquiryForm({ ...inquiryForm, name: e.target.value })}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-500 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -256,7 +255,7 @@ export default function PropertyDetailPage() {
                         value={inquiryForm.email}
                         onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-500 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -265,8 +264,9 @@ export default function PropertyDetailPage() {
                         placeholder="Phone Number"
                         value={inquiryForm.phone}
                         onChange={(e) => setInquiryForm({ ...inquiryForm, phone: e.target.value })}
+                        maxLength={10}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-500 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <div>
@@ -276,7 +276,7 @@ export default function PropertyDetailPage() {
                         onChange={(e) => setInquiryForm({ ...inquiryForm, message: e.target.value })}
                         rows={3}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-800 border border-gray-500 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
                     <button
@@ -296,14 +296,14 @@ export default function PropertyDetailPage() {
 
               {/* Contact Info */}
               <FadeIn delay={0.4}>
-                <div className="bg-white rounded-2xl p-6 shadow-sm">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Contact Agent</h3>
+                <div className="bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-sm">
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Contact Agent</h3>
                   <div className="space-y-4">
-                    <a href="tel:+919876543210" className="flex items-center gap-3 text-gray-600 hover:text-blue-600">
+                    <a href="tel:+919876543210" className="flex items-center gap-3 text-gray-600 dark:text-gray-300 hover:text-blue-600">
                       <Phone className="w-5 h-5" />
                       <span>+91 8249307969</span>
                     </a>
-                    <a href="mailto:info@plotvastu.com" className="flex items-center gap-3 text-gray-600 hover:text-blue-600">
+                    <a href="mailto:info@plotvastu.com" className="flex items-center gap-3 text-gray-600 dark:text-gray-300 hover:text-blue-600">
                       <Mail className="w-5 h-5" />
                       <span>info@plotvastu.com</span>
                     </a>
@@ -318,10 +318,10 @@ export default function PropertyDetailPage() {
       <Footer />
       <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
       {property && (
-        <PropertyMapModal 
-          isOpen={mapModalOpen} 
-          onClose={() => setMapModalOpen(false)} 
-          coordinates={property.location?.coordinates} 
+        <PropertyMapModal
+          isOpen={mapModalOpen}
+          onClose={() => setMapModalOpen(false)}
+          coordinates={property.location?.coordinates}
         />
       )}
     </>

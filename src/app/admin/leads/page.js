@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Search, 
-  Mail, 
-  Phone, 
+import {
+  Search,
+  Mail,
+  Phone,
   Calendar,
   Loader2,
   Filter,
   Eye,
   CheckCircle,
   Clock,
-  XCircle
+  XCircle,
+  X
 } from 'lucide-react';
 import { inquiryAPI } from '@/lib/api';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
@@ -89,7 +90,7 @@ export default function LeadsPage() {
     }
   };
 
-  const filteredLeads = leads.filter(lead => 
+  const filteredLeads = leads.filter(lead =>
     lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     lead.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     lead.propertyId?.title?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -240,12 +241,15 @@ export default function LeadsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] scrollbar-hide overflow-y-auto"
           >
-            <div className="p-6 border-b border-gray-100 dark:border-gray-700">
+            <div className="p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">Lead Details</h3>
+              <button onClick={() => setSelectedLead(null)} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            
+
             <div className="p-6 space-y-6">
               {/* Lead Info */}
               <div>

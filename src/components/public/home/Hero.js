@@ -1,21 +1,46 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { ArrowRight, Play, Star, TrendingUp, Users } from 'lucide-react';
+import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Play, Star, TrendingUp, Users, X } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+
+function AnimatedCounter({ from, to, suffix = '', decimals = 0 }) {
+  const count = useMotionValue(from);
+  const rounded = useTransform(count, (latest) => 
+    Number(latest).toFixed(decimals) + suffix
+  );
+
+  useEffect(() => {
+    const controls = animate(count, to, { duration: 2, ease: "easeOut" });
+    return controls.stop;
+  }, [count, to]);
+
+  return <motion.span>{rounded}</motion.span>;
+}
 
 export function Hero() {
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setIsVideoModalOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const stats = [
-    { icon: TrendingUp, value: '500+', label: 'Properties Listed' },
-    { icon: Users, value: '1000+', label: 'Happy Customers' },
-    { icon: Star, value: '4.9', label: 'Average Rating' },
+    { icon: TrendingUp, value: 500, suffix: '+', label: 'Properties Listed' },
+    { icon: Users, value: 1000, suffix: '+', label: 'Happy Customers' },
+    { icon: Star, value: 4.9, suffix: '', decimals: 1, label: 'Average Rating' },
   ];
 
   return (
     <section className="relative h-screen flex items-center pt-20 overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-900 dark:to-gray-800" />
-      
+
       {/* Animated Background Shapes */}
       <motion.div
         animate={{
@@ -76,8 +101,8 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-xl mx-auto lg:mx-0"
             >
-              Discover the perfect plot, residential, or commercial property. 
-              We offer a curated selection of premium properties with transparent 
+              Discover the perfect plot, residential, or commercial property.
+              We offer a curated selection of premium properties with transparent
               pricing and expert guidance.
             </motion.p>
 
@@ -94,7 +119,9 @@ export function Hero() {
                 Explore Properties
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <button className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:border-gray-300 dark:hover:border-gray-600 transition-colors">
+              <button 
+                onClick={() => setIsVideoModalOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:border-gray-300 dark:hover:border-gray-600 transition-colors cursor-pointer">
                 <Play className="w-5 h-5" />
                 Watch Video
               </button>
@@ -112,7 +139,7 @@ export function Hero() {
                   <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
                     <stat.icon className="w-5 h-5 text-blue-600" />
                     <span className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-                      {stat.value}
+                      <AnimatedCounter from={0} to={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
@@ -196,6 +223,41 @@ export function Hero() {
           </motion.div>
         </div>
       </div>
+      <AnimatePresence>
+        {isVideoModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+            onClick={() => setIsVideoModalOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="relative w-full max-w-5xl aspect-video bg-black rounded-2xl overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-gray-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setIsVideoModalOpen(false)}
+                className="absolute top-4 right-4 z-10 p-2 bg-black/50 hover:bg-black/80 text-white rounded-full transition-colors cursor-pointer backdrop-blur-sm"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
+              <video
+                src="/landVideo.mp4"
+                className="w-full h-full object-cover"
+                autoPlay
+                controls
+                playsInline
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
