@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Filter, X } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -10,6 +10,25 @@ import { PROPERTY_TYPES } from '@/lib/constants';
 export function PropertyFilter({ filters, onFilterChange }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localFilters, setLocalFilters] = useState(filters);
+  const [searchValue, setSearchValue] = useState(filters.search || '');
+
+  // Sync local filters when props change
+  useEffect(() => {
+    setLocalFilters(filters);
+    setSearchValue(filters.search || '');
+  }, [filters]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localFilters.search !== searchValue) {
+        const newFilters = { ...localFilters, search: searchValue };
+        setLocalFilters(newFilters);
+        onFilterChange(newFilters);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [searchValue]);
 
   const handleChange = async (key, value) => {
     // Validate min price
@@ -65,6 +84,7 @@ export function PropertyFilter({ filters, onFilterChange }) {
       search: '',
     };
     setLocalFilters(resetFilters);
+    setSearchValue('');
     onFilterChange(resetFilters);
   };
 
@@ -79,8 +99,8 @@ export function PropertyFilter({ filters, onFilterChange }) {
           <input
             type="text"
             placeholder="Search properties..."
-            value={localFilters.search || ''}
-            onChange={(e) => handleChange('search', e.target.value)}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
         </div>

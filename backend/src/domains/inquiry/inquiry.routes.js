@@ -22,6 +22,7 @@ router.post(
 );
 
 // Admin routes
+router.get('/stream', authMiddleware, adminOnly, inquiryController.streamInquiries);
 router.get('/', authMiddleware, adminOnly, inquiryController.getInquiries);
 router.get('/stats', authMiddleware, adminOnly, inquiryController.getInquiryStats);
 router.get('/recent', authMiddleware, adminOnly, inquiryController.getRecentInquiries);

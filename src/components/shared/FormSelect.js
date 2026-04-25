@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useId } from 'react';
 import Select from 'react-select';
 
 const customStyles = {
@@ -28,9 +29,18 @@ const customStyles = {
   menu: (base) => ({
     ...base,
     borderRadius: '12px',
+    overflow: 'hidden',
     boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
     zIndex: 50,
     backgroundColor: 'var(--select-bg)',
+  }),
+  menuList: (base) => ({
+    ...base,
+    '::-webkit-scrollbar': {
+      display: 'none',
+    },
+    msOverflowStyle: 'none',
+    scrollbarWidth: 'none',
   }),
   menuPortal: (base) => ({
     ...base,
@@ -57,6 +67,13 @@ export function FormSelect({
   placeholder = 'Select...',
   isClearable = false
 }) {
+  const [isMounted, setIsMounted] = useState(false);
+  const id = useId();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Sort options alphabetically by label
   const sortedOptions = [...options].sort((a, b) =>
     a.label.localeCompare(b.label)
@@ -82,13 +99,14 @@ export function FormSelect({
         </label>
       )}
       <Select
+        instanceId={id}
         options={sortedOptions}
         value={selectedOption}
         onChange={handleChange}
         placeholder={placeholder}
         isClearable={isClearable}
         styles={customStyles}
-        menuPortalTarget={typeof document !== 'undefined' ? document.body : null}
+        menuPortalTarget={isMounted ? document.body : null}
         menuPosition="fixed"
         className="light"
         classNamePrefix="select"

@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Send, 
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
   Loader2,
   Clock
 } from 'lucide-react';
@@ -15,6 +15,7 @@ import { Header } from '@/components/public/layout/Header';
 import { Footer } from '@/components/public/layout/Footer';
 import { LoginModal } from '@/components/public/home/LoginModal';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
+import { contactAPI } from '@/lib/api';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function ContactPage() {
@@ -32,12 +33,15 @@ export default function ContactPage() {
     e.preventDefault();
     setSubmitting(true);
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      await contactAPI.send(formData);
       toast.success('Message sent successfully! We will get back to you soon.');
       setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (error) {
+      toast.error('Failed to send message. Please try again later.');
+    } finally {
       setSubmitting(false);
-    }, 1500);
+    }
   };
 
   const contactInfo = [
@@ -71,7 +75,7 @@ export default function ContactPage() {
     <>
       <Toaster position="top-right" />
       <Header onLoginClick={() => setLoginModalOpen(true)} />
-      
+
       <main className="pt-20 min-h-screen bg-gray-50 dark:bg-gray-900">
         {/* Hero Section */}
         <section className="bg-linear-to-br from-blue-600 to-purple-600 text-white py-20">
@@ -105,8 +109,8 @@ export default function ContactPage() {
                         <div>
                           <h3 className="font-semibold text-gray-900 dark:text-white">{item.title}</h3>
                           {item.link ? (
-                            <a 
-                              href={item.link} 
+                            <a
+                              href={item.link}
                               className="text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors"
                             >
                               {item.content}
@@ -152,7 +156,7 @@ export default function ContactPage() {
                           value={formData.name}
                           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                           required
-                          placeholder="John Doe"
+                          placeholder="Enter your name"
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
@@ -165,7 +169,7 @@ export default function ContactPage() {
                           value={formData.email}
                           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                           required
-                          placeholder="john@example.com"
+                          placeholder="Enter your email"
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
@@ -180,7 +184,9 @@ export default function ContactPage() {
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          placeholder="+91 98765 43210"
+                          maxLength={10}
+                          required
+                          placeholder="Enter your phone number"
                           className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-400 dark:border-gray-600 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>

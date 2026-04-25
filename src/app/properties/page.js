@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { Header } from '@/components/public/layout/Header';
 import { Footer } from '@/components/public/layout/Footer';
@@ -11,12 +12,13 @@ import { FadeIn } from '@/components/shared/animations/FadeIn';
 import { useProperties } from '@/hooks/useProperties';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
-export default function PropertiesPage() {
+function PropertiesContent() {
+  const searchParams = useSearchParams();
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [filters, setFilters] = useState({
     page: 1,
     limit: 9,
-    type: '',
+    type: searchParams?.get('type') || '',
     status: '',
     minPrice: '',
     maxPrice: '',
@@ -25,6 +27,13 @@ export default function PropertiesPage() {
     sortBy: 'createdAt',
     sortOrder: 'desc',
   });
+
+  useEffect(() => {
+    const type = searchParams?.get('type');
+    if (type !== null && type !== undefined) {
+      setFilters(prev => ({ ...prev, type: type || '', page: 1 }));
+    }
+  }, [searchParams]);
 
   const { properties, pagination, loading, error } = useProperties(filters);
 
@@ -159,5 +168,17 @@ export default function PropertiesPage() {
       <Footer />
       <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
     </>
+  );
+}
+
+export default function PropertiesPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <PropertiesContent />
+    </Suspense>
   );
 }
