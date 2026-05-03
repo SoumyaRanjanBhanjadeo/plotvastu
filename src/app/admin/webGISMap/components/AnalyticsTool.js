@@ -10,7 +10,7 @@ const AnalyticsTool = ({ isOpen, onClose }) => {
       <div ref={nodeRef} className="draggable-panel">
         <div className="draggable-header">
           <span className="draggable-title">Analytics</span>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+          <button className="close-btn" title='close' onClick={onClose}>&times;</button>
         </div>
         <div className="draggable-content">
           <p className="text-sm text-gray-600">Basic analytics and charts will appear here.</p>

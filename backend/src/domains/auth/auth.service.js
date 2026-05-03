@@ -117,7 +117,7 @@ class AuthService {
     const user = await User.findByIdAndUpdate(
       userId,
       { name },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
     
     if (!user) {

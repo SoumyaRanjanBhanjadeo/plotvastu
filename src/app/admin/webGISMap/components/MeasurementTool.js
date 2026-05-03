@@ -17,6 +17,7 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
 
   const [activeTab, setActiveTab] = useState('point'); // point, distance, area
   const [unit, setUnit] = useState('metric');
+  const [isMinimized, setIsMinimized] = useState(false);
 
   // Point State
   const [currentPointDD, setCurrentPointDD] = useState('-');
@@ -32,7 +33,7 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
   const vectorLayerRef = useRef(null);
   const drawInteractionRef = useRef(null);
   const listenerRef = useRef(null);
-  const overlaysRef = useRef([]);
+  const overlaysRef = useRef([]); // [{ overlay, rawValue }]
 
   // Initialize Layer safely
   useEffect(() => {
@@ -71,7 +72,7 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
         mapInstance.current.removeLayer(vectorLayerRef.current);
       }
       if (mapInstance && mapInstance.current) {
-        overlaysRef.current.forEach(overlay => mapInstance.current.removeOverlay(overlay));
+        overlaysRef.current.forEach(({ overlay }) => mapInstance.current.removeOverlay(overlay));
       }
     };
   }, []);
@@ -83,6 +84,18 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
       removeDrawInteraction();
     }
   }, [isOpen]);
+
+  // Re-render all existing map tooltips when unit changes
+  useEffect(() => {
+    overlaysRef.current.forEach(({ overlay, rawValue }) => {
+      const el = overlay.getElement();
+      if (!el) return;
+      // Only update distance/area tooltips (not point tooltips)
+      if (el.className.includes('measure-distance-tooltip')) {
+        el.innerHTML = formatMeasurementWithUnit(rawValue, activeTab, unit);
+      }
+    });
+  }, [unit]);
 
   // Handle Tab Change
   const handleTabChange = (tab) => {
@@ -123,11 +136,12 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
       // Remove only point tooltips
       if (mapInstance && mapInstance.current) {
         const remainingOverlays = [];
-        overlaysRef.current.forEach(overlay => {
-          if (overlay.getElement() && overlay.getElement().className.includes('measure-point-tooltip')) {
-            mapInstance.current.removeOverlay(overlay);
+        overlaysRef.current.forEach(entry => {
+          const el = entry.overlay.getElement();
+          if (el && el.className.includes('measure-point-tooltip')) {
+            mapInstance.current.removeOverlay(entry.overlay);
           } else {
-            remainingOverlays.push(overlay);
+            remainingOverlays.push(entry);
           }
         });
         overlaysRef.current = remainingOverlays;
@@ -157,12 +171,12 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
 
     if (mapInstance && mapInstance.current) {
       const remainingOverlays = [];
-      overlaysRef.current.forEach(overlay => {
-        // Distance and Area share the same tooltip class
-        if (overlay.getElement() && overlay.getElement().className.includes('measure-distance-tooltip')) {
-          mapInstance.current.removeOverlay(overlay);
+      overlaysRef.current.forEach(entry => {
+        const el = entry.overlay.getElement();
+        if (el && el.className.includes('measure-distance-tooltip')) {
+          mapInstance.current.removeOverlay(entry.overlay);
         } else {
-          remainingOverlays.push(overlay);
+          remainingOverlays.push(entry);
         }
       });
       overlaysRef.current = remainingOverlays;
@@ -284,7 +298,7 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
         });
         tooltipOverlay.setPosition(geom.getCoordinates());
         map.addOverlay(tooltipOverlay);
-        overlaysRef.current.push(tooltipOverlay);
+        overlaysRef.current.push({ overlay: tooltipOverlay, rawValue: 0 }); // points have no numeric value
 
         // Let user keep clicking if they want to
       });
@@ -304,7 +318,9 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
           positioning: 'bottom-center'
         });
         map.addOverlay(measureTooltip);
-        overlaysRef.current.push(measureTooltip);
+        // Store as entry with rawValue — will be updated live as geometry changes
+        const overlayEntry = { overlay: measureTooltip, rawValue: 0 };
+        overlaysRef.current.push(overlayEntry);
 
         listenerRef.current = geom.on('change', (e) => {
           const geomChange = e.target;
@@ -332,9 +348,10 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
           }
 
           setMeasurementValue(output);
+          // Keep rawValue in sync so unit-change effect can reformat it
+          overlayEntry.rawValue = output;
 
-          // Update immediately because we need the state variable inside a closure, 
-          // but state updates are async, so let's use the format helper directly.
+          // Update tooltip immediately (unit is captured via overlayEntry, not stale closure)
           if (measureTooltipElement && tooltipCoord) {
             measureTooltipElement.innerHTML = formatMeasurementWithUnit(output, activeTab, unit);
             measureTooltip.setPosition(tooltipCoord);
@@ -408,117 +425,123 @@ const MeasurementTool = ({ isOpen, onClose, mapInstance }) => {
             <FiFileText className="w-[10px] h-[10px] text-blue-500" />
             <span className="draggable-title">Measurement</span>
           </div>
-          <button className="close-btn" onClick={onClose}>&times;</button>
+          <div className="flex items-center gap-1">
+            <button className="minimize-btn" onClick={() => setIsMinimized(p => !p)} title={isMinimized ? 'Restore' : 'Minimize'}>
+              {isMinimized ? '▢' : '-'}
+            </button>
+            <button className="close-btn" title='close' onClick={onClose}>&times;</button>
+          </div>
         </div>
 
-        <div className="draggable-content p-4 font-inter">
+        {!isMinimized && (
+          <div className="draggable-content p-4 font-inter">
 
-          {/* Mode Tabs */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <button
-              onClick={() => handleTabChange('point')}
-              className={`py-2 rounded border flex items-center justify-center gap-1.5 text-[13px] transition-colors cursor-pointer ${activeTab === 'point' ? 'bg-blue-500 text-white border-blue-500 font-medium' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-            >
-              <div className={`w-1 h-1 rounded-full ${activeTab === 'point' ? 'bg-white' : 'bg-gray-700'}`}></div>
-              Point
-            </button>
-            <button
-              onClick={() => handleTabChange('distance')}
-              className={`py-2 rounded border flex items-center justify-center gap-1.5 text-[13px] transition-colors cursor-pointer ${activeTab === 'distance' ? 'bg-blue-500 text-white border-blue-500 font-medium' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-            >
-              <div className={`w-2 h-2 ${activeTab === 'distance' ? 'bg-white' : 'bg-gray-700'}`}></div>
-              Distance
-            </button>
-            <button
-              onClick={() => handleTabChange('area')}
-              className={`py-2 rounded border flex items-center justify-center gap-1.5 text-[13px] transition-colors cursor-pointer ${activeTab === 'area' ? 'bg-blue-500 text-white border-blue-500 font-medium' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
-            >
-              <div className={`w-2 h-2 ${activeTab === 'area' ? 'bg-white' : 'bg-gray-700'}`}></div>
-              Area
-            </button>
-          </div>
-
-          {/* Units Selection */}
-          <div className="mb-4">
-            <label className="block text-[14px] text-gray-800 font-medium mb-1.5">Units</label>
-            <select
-              value={unit}
-              onChange={(e) => setUnit(e.target.value)}
-              className="w-full border border-gray-300 rounded p-2 text-[14px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
-            >
-              {getUnitsForTab().map(u => (
-                <option key={u.value} value={u.value}>{u.label}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Action Buttons */}
-          {activeTab === 'point' ? (
-            <div className="flex flex-col gap-4">
+            {/* Mode Tabs */}
+            <div className="grid grid-cols-3 gap-2 mb-4">
               <button
-                onClick={activeTab === 'point' && !isDrawing ? startDrawing : handleClearAll}
-                className={`w-full font-medium py-2 rounded text-[14px] transition-colors cursor-pointer ${isDrawing ? 'bg-blue-500 text-white' : activeTab === 'point' ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+                onClick={() => handleTabChange('point')}
+                className={`py-2 rounded border flex items-center justify-center gap-1.5 text-[13px] transition-colors cursor-pointer ${activeTab === 'point' ? 'bg-blue-500 text-white border-blue-500 font-medium' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
               >
-                {isDrawing ? "Clear Points" : getActiveFeaturesCount() > 0 ? "Clear Points" : "Start Adding Points"}
+                <div className={`w-1 h-1 rounded-full ${activeTab === 'point' ? 'bg-white' : 'bg-gray-700'}`}></div>
+                Point
               </button>
-
-              <div className="grid grid-cols-2 gap-3 mt-1">
-                <div>
-                  <label className="block text-[12px] text-gray-700 mb-1.5">Current Point (DD)</label>
-                  <div className="w-full border border-gray-200 rounded p-2 text-[12px] bg-[#f8fafc] text-gray-800 flex items-center h-[34px]">
-                    {currentPointDD}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[12px] text-gray-700 mb-1.5">Current Point (DMS)</label>
-                  <div className="w-full border border-gray-200 rounded p-2 text-[12px] bg-[#f8fafc] text-gray-800 flex items-center h-[34px]">
-                    {currentPointDMS}
-                  </div>
-                </div>
-              </div>
-
-              {allPoints.length > 0 && (
-                <div className="mt-1">
-                  <label className="block text-[13px] text-gray-800 mb-2">All Points ({allPoints.length})</label>
-                  <div className="border border-gray-200 rounded-md overflow-hidden bg-white max-h-[120px] overflow-y-auto">
-                    {allPoints.map((pt, idx) => (
-                      <div key={idx} className={`px-3 py-2 text-[12px] text-gray-700 ${idx !== allPoints.length - 1 ? 'border-b border-gray-100' : ''}`}>
-                        {idx + 1}. {pt}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <p className="text-[12px] text-gray-500 italic text-center mt-2">Click on the map to add points. Click 'Clear Points' to reset.</p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <div className="grid grid-cols-2 gap-2">
-                <button onClick={handleCancel} className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 py-2 rounded text-[13px] transition-colors cursor-pointer">Cancel</button>
-                <button onClick={handleClearAll} className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded text-[13px] transition-colors cursor-pointer">Clear All</button>
-              </div>
               <button
-                onClick={startDrawing}
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded text-[13px] transition-colors cursor-pointer"
+                onClick={() => handleTabChange('distance')}
+                className={`py-2 rounded border flex items-center justify-center gap-1.5 text-[13px] transition-colors cursor-pointer ${activeTab === 'distance' ? 'bg-blue-500 text-white border-blue-500 font-medium' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
               >
-                {isDrawing ? "Drawing in progress..." : `Start New ${activeTab === 'distance' ? 'Distance' : 'Area'} Measurement`}
+                <div className={`w-2 h-2 ${activeTab === 'distance' ? 'bg-white' : 'bg-gray-700'}`}></div>
+                Distance
               </button>
-
-              <div className="mt-2">
-                <label className="block text-[13px] text-gray-700 mb-1.5">{activeTab === 'distance' ? 'Total Length' : 'Total Area'}</label>
-                <div className="w-full border border-gray-200 rounded p-3 text-[14px] text-center font-bold font-mono tracking-wide bg-gray-50 text-black">
-                  {formatMeasurement(measurementValue)}
-                </div>
-              </div>
-
-              <p className="text-[12px] text-gray-500 italic text-center mt-1">
-                Click 'Start New {activeTab === 'distance' ? 'Distance' : 'Area'} Measurement' then click on map to draw {activeTab === 'distance' ? 'line' : 'polygon'}. Double-click to finish.
-              </p>
+              <button
+                onClick={() => handleTabChange('area')}
+                className={`py-2 rounded border flex items-center justify-center gap-1.5 text-[13px] transition-colors cursor-pointer ${activeTab === 'area' ? 'bg-blue-500 text-white border-blue-500 font-medium' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}`}
+              >
+                <div className={`w-2 h-2 ${activeTab === 'area' ? 'bg-white' : 'bg-gray-700'}`}></div>
+                Area
+              </button>
             </div>
-          )}
 
-        </div>
+            {/* Units Selection */}
+            <div className="mb-4">
+              <label className="block text-[14px] text-gray-800 font-medium mb-1.5">Units</label>
+              <select
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                className="w-full border border-gray-300 rounded p-2 text-[14px] text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+              >
+                {getUnitsForTab().map(u => (
+                  <option key={u.value} value={u.value}>{u.label}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Action Buttons */}
+            {activeTab === 'point' ? (
+              <div className="flex flex-col gap-4">
+                <button
+                  onClick={activeTab === 'point' && !isDrawing ? startDrawing : handleClearAll}
+                  className={`w-full font-medium py-2 rounded text-[14px] transition-colors cursor-pointer ${isDrawing ? 'bg-blue-500 text-white' : activeTab === 'point' ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-blue-500 text-white hover:bg-blue-600'}`}
+                >
+                  {isDrawing ? "Clear Points" : getActiveFeaturesCount() > 0 ? "Clear Points" : "Start Adding Points"}
+                </button>
+
+                <div className="grid grid-cols-2 gap-3 mt-1">
+                  <div>
+                    <label className="block text-[12px] text-gray-700 mb-1.5">Current Point (DD)</label>
+                    <div className="w-full border border-gray-200 rounded p-2 text-[12px] bg-[#f8fafc] text-gray-800 flex items-center h-[34px]">
+                      {currentPointDD}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[12px] text-gray-700 mb-1.5">Current Point (DMS)</label>
+                    <div className="w-full border border-gray-200 rounded p-2 text-[12px] bg-[#f8fafc] text-gray-800 flex items-center h-[34px]">
+                      {currentPointDMS}
+                    </div>
+                  </div>
+                </div>
+
+                {allPoints.length > 0 && (
+                  <div className="mt-1">
+                    <label className="block text-[13px] text-gray-800 mb-2">All Points ({allPoints.length})</label>
+                    <div className="border border-gray-200 rounded-md overflow-hidden bg-white max-h-[120px] overflow-y-auto">
+                      {allPoints.map((pt, idx) => (
+                        <div key={idx} className={`px-3 py-2 text-[12px] text-gray-700 ${idx !== allPoints.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                          {idx + 1}. {pt}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <p className="text-[12px] text-gray-500 italic text-center mt-2">Click on the map to add points. Click 'Clear Points' to reset.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-2 gap-2">
+                  <button onClick={handleCancel} className="bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 py-2 rounded text-[13px] transition-colors cursor-pointer">Cancel</button>
+                  <button onClick={handleClearAll} className="bg-blue-500 hover:bg-blue-600 text-white py-2 rounded text-[13px] transition-colors cursor-pointer">Clear All</button>
+                </div>
+                <button
+                  onClick={startDrawing}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded text-[13px] transition-colors cursor-pointer"
+                >
+                  {isDrawing ? "Drawing in progress..." : `Start New ${activeTab === 'distance' ? 'Distance' : 'Area'} Measurement`}
+                </button>
+
+                <div className="mt-2">
+                  <label className="block text-[13px] text-gray-700 mb-1.5">{activeTab === 'distance' ? 'Total Length' : 'Total Area'}</label>
+                  <div className="w-full border border-gray-200 rounded p-3 text-[14px] text-center font-bold font-mono tracking-wide bg-gray-50 text-black">
+                    {formatMeasurement(measurementValue)}
+                  </div>
+                </div>
+
+                <p className="text-[12px] text-gray-500 italic text-center mt-1">
+                  Click 'Start New {activeTab === 'distance' ? 'Distance' : 'Area'} Measurement' then click on map to draw {activeTab === 'distance' ? 'line' : 'polygon'}. Double-click to finish.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </Draggable>
   );

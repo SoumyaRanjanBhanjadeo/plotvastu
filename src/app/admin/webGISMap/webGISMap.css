@@ -185,6 +185,23 @@
   color: #111827;
 }
 
+.minimize-btn {
+  color: #2a2e35;
+  cursor: pointer;
+  background: #80808066;
+  border: none;
+  border-radius: 50%;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  transition: all .2s;
+}
+
+.minimize-btn:hover {
+  background: #fde68a;
+  color: #92400e;
+}
+
 .draggable-content {
   padding: 16px;
   min-height: 100px;
@@ -200,7 +217,7 @@
   border-radius: 4px;
   font-size: 11px;
   font-weight: 500;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
   position: relative;
   font-family: 'Inter', sans-serif;
@@ -227,7 +244,7 @@
   border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
   position: relative;
   font-family: 'Inter', sans-serif;

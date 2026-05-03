@@ -1,23 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, Quote } from 'lucide-react';
 import { FadeIn } from '@/components/shared/animations/FadeIn';
-import { TESTIMONIALS } from '@/lib/constants';
+import { websiteContentAPI } from '@/lib/api';
 
 export function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [testimonialsData, setTestimonialsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTestimonials = async () => {
+      try {
+        const response = await websiteContentAPI.getTestimonials();
+        setTestimonialsData(response.data.data);
+      } catch (error) {
+        console.error('Failed to fetch testimonials:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTestimonials();
+  }, []);
+
+  const testimonials = testimonialsData?.content?.testimonials || [];
 
   const next = () => {
-    setCurrentIndex((prev) => (prev + 1) % TESTIMONIALS.length);
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const prev = () => {
-    setCurrentIndex((prev) => (prev - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
-  const currentTestimonial = TESTIMONIALS[currentIndex];
+  if (loading || testimonials.length === 0) {
+    return <div className="py-20 text-center">Loading testimonials...</div>;
+  }
+
+  const currentTestimonial = testimonials[currentIndex];
 
   return (
     <section className="py-20 lg:py-28 bg-linear-to-br from-gray-900 via-gray-800 to-blue-900 text-white overflow-hidden">
@@ -28,13 +50,13 @@ export function Testimonials() {
             Testimonials
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
-            What Our{' '}
+            {testimonialsData?.content?.title || "What Our"}{' '}
             <span className="bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Clients Say
+              {testimonialsData?.content?.title?.includes('Clients') ? "Clients Say" : "Clients Say"}
             </span>
           </h2>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Hear from our satisfied customers who found their dream properties through PlotVastu.
+            {testimonialsData?.content?.subtitle || "Hear from our satisfied customers who found their dream properties through PlotVastu."}
           </p>
         </FadeIn>
 
@@ -97,20 +119,20 @@ export function Testimonials() {
                 <ChevronLeft className="w-6 h-6" />
               </button>
 
-              {/* Dots */}
-              <div className="flex items-center gap-2">
-                {TESTIMONIALS.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      index === currentIndex
-                        ? 'w-8 bg-blue-500'
-                        : 'bg-white/30 hover:bg-white/50 cursor-pointer'
-                    }`}
-                  />
-                ))}
-              </div>
+               {/* Dots */}
+               <div className="flex items-center gap-2">
+                 {testimonials.map((_, index) => (
+                   <button
+                     key={index}
+                     onClick={() => setCurrentIndex(index)}
+                     className={`w-2 h-2 rounded-full transition-all ${
+                       index === currentIndex
+                         ? 'w-8 bg-blue-500'
+                         : 'bg-white/30 hover:bg-white/50 cursor-pointer'
+                     }`}
+                   />
+                 ))}
+               </div>
 
               <button
                 onClick={next}

@@ -1,13 +1,24 @@
 'use client';
 
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
-import { ArrowRight, Play, Star, TrendingUp, Users, X } from 'lucide-react';
+import { ArrowRight, Play, Star, TrendingUp, Users, X, Building2, Map, Settings, LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { websiteContentAPI } from '@/lib/api';
+
+const iconMap = {
+  TrendingUp,
+  Users,
+  Star,
+  Building2,
+  Map,
+  Settings,
+  LayoutDashboard,
+};
 
 function AnimatedCounter({ from, to, suffix = '', decimals = 0 }) {
   const count = useMotionValue(from);
-  const rounded = useTransform(count, (latest) => 
+  const rounded = useTransform(count, (latest) =>
     Number(latest).toFixed(decimals) + suffix
   );
 
@@ -21,6 +32,22 @@ function AnimatedCounter({ from, to, suffix = '', decimals = 0 }) {
 
 export function Hero() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [heroContent, setHeroContent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchHeroContent = async () => {
+      try {
+        const response = await websiteContentAPI.getHero();
+        setHeroContent(response.data.data);
+      } catch (error) {
+        console.error('Failed to fetch hero content:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHeroContent();
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -30,11 +57,15 @@ export function Hero() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const stats = [
+  const stats = heroContent?.content?.stats || [
     { icon: TrendingUp, value: 500, suffix: '+', label: 'Properties Listed' },
     { icon: Users, value: 1000, suffix: '+', label: 'Happy Customers' },
     { icon: Star, value: 4.9, suffix: '', decimals: 1, label: 'Average Rating' },
   ];
+
+  if (loading) {
+    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+  }
 
   return (
     <section className="relative h-screen flex items-center pt-20 overflow-hidden">
@@ -78,7 +109,7 @@ export function Hero() {
             >
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
                 <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
-                #1 Real Estate Platform
+                {heroContent?.content?.tagline || "#1 Real Estate Platform"}
               </span>
             </motion.div>
 
@@ -88,11 +119,20 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-2xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-4"
             >
-              Find Your{' '}
-              <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Dream Property
-              </span>{' '}
-              With Us
+              {heroContent?.content?.title ? (
+                heroContent.content.title.split(' ').map((word, i) => {
+                  if (word.includes('Dream')) {
+                    return (
+                      <span key={i} className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        {word}{' '}
+                      </span>
+                    );
+                  }
+                  return word + ' ';
+                })
+              ) : (
+                <>Find Your <span className="bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Dream Property</span> With Us</>
+              )}
             </motion.h1>
 
             <motion.p
@@ -101,9 +141,7 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-gray-600 dark:text-gray-300 mb-6 max-w-xl mx-auto lg:mx-0"
             >
-              Discover the perfect plot, residential, or commercial property.
-              We offer a curated selection of premium properties with transparent
-              pricing and expert guidance.
+              {heroContent?.content?.subtitle || "Discover the perfect plot, residential, or commercial property. We offer a curated selection of premium properties with transparent pricing and expert guidance."}
             </motion.p>
 
             <motion.div
@@ -113,17 +151,18 @@ export function Hero() {
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
               <Link
-                href="/properties"
+                href={heroContent?.content?.primaryCTA?.link || "/properties"}
                 className="group inline-flex items-center justify-center gap-2 px-5 py-3 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition-all hover:gap-4"
               >
-                Explore Properties
+                {heroContent?.content?.primaryCTA?.text || "Explore Properties"}
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Link>
-              <button 
+              <button
                 onClick={() => setIsVideoModalOpen(true)}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:border-gray-300 dark:hover:border-gray-600 transition-colors cursor-pointer">
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-2 border-gray-200 dark:border-gray-700 rounded-xl font-semibold hover:border-gray-300 dark:hover:border-gray-600 transition-colors cursor-pointer"
+              >
                 <Play className="w-5 h-5" />
-                Watch Video
+                {heroContent?.content?.secondaryCTA?.text || "Watch Video"}
               </button>
             </motion.div>
 
@@ -134,17 +173,20 @@ export function Hero() {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="grid grid-cols-3 gap-6 mt-8 pt-6 border-t border-gray-200 dark:border-gray-700"
             >
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center lg:text-left">
-                  <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
-                    <stat.icon className="w-5 h-5 text-blue-600" />
-                    <span className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
-                      <AnimatedCounter from={0} to={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
-                    </span>
+              {stats.map((stat, index) => {
+                const IconComponent = typeof stat.icon === 'string' ? iconMap[stat.icon] : stat.icon;
+                return (
+                  <div key={index} className="text-center lg:text-left">
+                    <div className="flex items-center justify-center lg:justify-start gap-2 mb-1">
+                      <IconComponent className="w-5 h-5 text-blue-600" />
+                      <span className="text-2xl lg:text-3xl font-bold text-gray-900 dark:text-white">
+                        <AnimatedCounter from={0} to={stat.value} suffix={stat.suffix} decimals={stat.decimals || 0} />
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{stat.label}</p>
-                </div>
-              ))}
+                );
+              })}
             </motion.div>
           </div>
 
@@ -248,7 +290,7 @@ export function Hero() {
               </button>
 
               <video
-                src="/landVideo.mp4"
+                src={heroContent?.content?.videoUrl || "/landVideo.mp4"}
                 className="w-full h-full object-cover"
                 autoPlay
                 controls

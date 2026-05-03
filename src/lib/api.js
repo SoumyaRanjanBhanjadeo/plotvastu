@@ -101,4 +101,18 @@ export const contactAPI = {
   send: (data) => api.post('/contact', data),
 };
 
+// Website Content API
+export const websiteContentAPI = {
+  getHero: () => api.get('/website-content/hero'),
+  getTestimonials: () => api.get('/website-content/testimonials'),
+  getFooter: () => api.get('/website-content/footer'),
+  getSettings: () => api.get('/website-content/settings'),
+  // Admin
+  getAll: () => api.get('/website-content/admin/all'),
+  updateHero: (data) => api.put('/website-content/admin/hero', data),
+  updateTestimonials: (data) => api.put('/website-content/admin/testimonials', data),
+  updateFooter: (data) => api.put('/website-content/admin/footer', data),
+  updateSettings: (data) => api.put('/website-content/admin/settings', data),
+};
+
 export default api;

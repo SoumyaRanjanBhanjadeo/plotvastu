@@ -130,6 +130,7 @@ propertySchema.index({ isFeatured: 1, isActive: 1 });
 
 // Virtual for formatted price
 propertySchema.virtual('formattedPrice').get(function () {
+  if (!this.price || this.price.amount == null) return null;
   const symbol = this.price.currency === 'INR' ? '₹' : '$';
   return `${symbol}${this.price.amount.toLocaleString('en-IN')}`;
 });
