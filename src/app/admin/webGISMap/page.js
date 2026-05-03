@@ -103,10 +103,20 @@ const WebGISMapPage = () => {
     });
   };
 
-  // Auto-collapse sidebar when component mounts
+  // Auto-collapse sidebar + lock scroll when map is mounted
   useEffect(() => {
     const sidebarToggleEvent = new CustomEvent('sidebar-toggle', { detail: { collapsed: true } });
     document.dispatchEvent(sidebarToggleEvent);
+
+    // Prevent any vertical scrollbar from showing on the map page
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      // Restore scroll when leaving the map page
+      document.documentElement.style.overflow = '';
+      document.body.style.overflow = '';
+    };
   }, []);
 
   // Handle clicking outside to close
@@ -316,11 +326,6 @@ const WebGISMapPage = () => {
 
     mapInstance.current = map;
 
-    map.on('click', (event) => {
-      const coordinates = event.coordinate;
-      console.log('Clicked at:', coordinates);
-    });
-
     map.on('pointermove', (event) => {
       const lonLat = toLonLat(event.coordinate);
       setPointerCoords({ lon: lonLat[0], lat: lonLat[1] });
@@ -337,7 +342,7 @@ const WebGISMapPage = () => {
   }, []);
 
   return (
-    <div className="h-screen w-full relative">
+    <div className="h-[calc(100vh-64px)] w-full relative overflow-hidden">
       {/* Map Container */}
       <div
         ref={mapRef}
@@ -345,7 +350,7 @@ const WebGISMapPage = () => {
       />
 
       {/* Basemap Switcher - Bottom Left */}
-      <div className="absolute bottom-6 left-6 z-1000 flex flex-col cursor-pointer" ref={menuRef}>
+      <div className="absolute bottom-6 left-6 z-1000 flex flex-col" ref={menuRef}>
 
         {/* Popup Menu */}
         {isMenuOpen && (
@@ -412,7 +417,6 @@ const WebGISMapPage = () => {
             <span className="text-white text-[13px] font-inter tracking-wide drop-shadow-md">Basemap</span>
           </div>
         </button>
-
       </div>
 
       {/* Custom Bottom Right Controls */}

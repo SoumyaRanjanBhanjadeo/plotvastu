@@ -80,7 +80,7 @@ class InquiryService {
     const inquiry = await Inquiry.findByIdAndUpdate(
       id,
       data,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     ).populate('propertyId', 'title location.city');
 
     if (!inquiry) {

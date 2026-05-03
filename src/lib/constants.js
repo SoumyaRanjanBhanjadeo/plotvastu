@@ -103,4 +103,5 @@ export const ADMIN_NAV_LINKS = [
   { href: '/admin/properties', label: 'Properties', icon: 'Home' },
   { href: '/admin/leads', label: 'Leads', icon: 'Users' },
   { href: '/admin/settings', label: 'Settings', icon: 'Settings' },
+  { href: '/admin/websiteDashboard', label: 'Website Dashboard', icon: 'LayoutDashboard' },
 ];

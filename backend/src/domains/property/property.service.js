@@ -97,7 +97,7 @@ class PropertyService {
     const property = await Property.findByIdAndUpdate(
       id,
       data,
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
     if (!property) {
       throw new Error('Property not found');

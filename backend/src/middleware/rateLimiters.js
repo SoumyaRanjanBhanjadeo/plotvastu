@@ -1,6 +1,13 @@
 const rateLimit = require('express-rate-limit');
 
 /**
+ * Helper to skip rate limiting in development
+ */
+const skipInDevelopment = (req) => {
+  return process.env.NODE_ENV === 'development';
+};
+
+/**
  * Strict rate limiter for login endpoint.
  * Max 5 attempts per 15 minutes per IP to prevent brute-force attacks.
  */
@@ -11,9 +18,10 @@ const loginLimiter = rateLimit({
     success: false,
     message: 'Too many login attempts from this IP. Please try again after 15 minutes.',
   },
-  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  standardHeaders: true,
   legacyHeaders: false,
   skipSuccessfulRequests: true, // Don't count successful logins against the limit
+  skip: skipInDevelopment,
 });
 
 /**
@@ -29,6 +37,7 @@ const publicFormLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: skipInDevelopment,
 });
 
 /**
@@ -44,6 +53,7 @@ const generalLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: skipInDevelopment,
 });
 
 module.exports = { loginLimiter, publicFormLimiter, generalLimiter };

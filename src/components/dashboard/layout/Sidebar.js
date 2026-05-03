@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { 
-  LayoutDashboard, 
-  Home, 
-  Users, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Home,
+  Users,
+  Settings,
   LogOut,
   Building2,
   Map,
@@ -24,6 +24,7 @@ const navItems = [
   { href: '/admin/webGISMap', label: 'Web GIS Map', icon: Map },
   { href: '/admin/leads', label: 'Leads', icon: Users },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
+  { href: '/admin/websiteDashboard', label: 'Website Dashboard', icon: LayoutDashboard },
 ];
 
 export function Sidebar({ isCollapsed, onToggle }) {
@@ -58,10 +59,9 @@ export function Sidebar({ isCollapsed, onToggle }) {
   };
 
   return (
-    <aside 
-      className={`fixed left-0 top-0 h-screen bg-gray-900 text-white transition-all duration-300 z-50 ${
-        isCollapsed ? 'w-20' : 'w-64'
-      }`}
+    <aside
+      className={`fixed left-0 top-0 h-screen bg-gray-900 text-white transition-all duration-300 z-50 ${isCollapsed ? 'w-20' : 'w-64'
+        }`}
     >
       {/* Logo */}
       <div className="h-16 flex items-center justify-between px-4 border-b border-gray-800">
@@ -95,11 +95,10 @@ export function Sidebar({ isCollapsed, onToggle }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                isActive
-                  ? 'bg-blue-600 text-white'
-                  : 'text-gray-400 hover:bg-gray-800 hover:text-white'
-              }`}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${isActive
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-400 hover:bg-gray-800 hover:text-white'
+                }`}
             >
               <Icon className="w-5 h-5 shrink-0" />
               {!isCollapsed && (

@@ -14,6 +14,7 @@ const inquiryRoutes = require('./domains/inquiry/inquiry.routes');
 const mediaRoutes = require('./domains/media/media.routes');
 const analyticsRoutes = require('./domains/analytics/analytics.routes');
 const contactRoutes = require('./domains/contact/contact.routes');
+const websiteContentRoutes = require('./domains/websiteContent/websiteContent.routes');
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use('/api/v1/inquiries', inquiryRoutes);
 app.use('/api/v1/media', mediaRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/contact', contactRoutes);
+app.use('/api/v1/website-content', websiteContentRoutes);
 
 // Backward-compatibility: inform old clients of the new API version
 app.use('/api', (req, res) => {
